@@ -42,8 +42,8 @@ class MainActivity : ComponentActivity() {
         val action: String? = intent?.action
         val data: Uri? = intent?.data
         //get session token from url
-        var sessionToken: String? = data?.fragment?.split("=")?.get(1)?.split("&")?.get(0)
-        var sTokenExpiration = data?.fragment?.split("=")?.get(3)
+        val sessionToken: String? = data?.fragment?.split("=")?.get(1)?.split("&")?.get(0)
+        val sTokenExpiration = data?.fragment?.split("=")?.get(3)
 
         //shared preferences
         val sharedPreferences = getSharedPreferences("yawa", MODE_PRIVATE)
@@ -151,7 +151,7 @@ fun DefaultPreview() {
  */
 suspend fun getUserInfo(session_token: String): User? {
     val TAG = "GetUserInfoTAG"
-    var userInfo = User()
+    val userInfo = User()
     val apolloClient = ApolloClient(
         networkTransport = HttpNetworkTransport(
             serverUrl = "https://graphql.anilist.co/",
