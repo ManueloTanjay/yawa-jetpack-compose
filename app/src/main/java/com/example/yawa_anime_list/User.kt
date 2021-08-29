@@ -1,4 +1,4 @@
-package com.example.yawa_anime_list.ui.theme
+package com.example.yawa_anime_list
 
 class User {
     var username = ""

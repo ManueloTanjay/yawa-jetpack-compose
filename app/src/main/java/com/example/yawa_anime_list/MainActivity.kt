@@ -28,7 +28,6 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.example.yawa_anime_list.ui.theme.User
 import com.example.yawa_anime_list.ui.theme.YawaanimelistTheme
 import kotlinx.coroutines.launch
 
@@ -52,16 +51,22 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             if (hasLoggedIn(sharedPreferences)) {
-                sessionToken = sharedPreferences.getString("sessionToken", null)
-                sTokenExpiration = sharedPreferences.getString("sessionTokenExpiry", null)
+//                sessionToken = sharedPreferences.getString("sessionToken", null)
+//                sTokenExpiration = sharedPreferences.getString("sessionTokenExpiry", null)
                 Log.d(TAG, "User has logged in previously")
                 setContent {
-                    ListsScreen(sessionToken.toString(), sTokenExpiration.toString())
+                    ListsScreen(sharedPreferences)
                 }
             } else if (!(sessionToken === null)) {
+                //get userInfo
+                val userInfo = getUserInfo(sessionToken.toString())
+
                 editor.apply {
                     putString("sessionToken", sessionToken)
                     putString("sessionTokenExpiry", sTokenExpiration)
+                    putString("username", userInfo?.username)
+                    putString("userID", userInfo?.userID)
+                    putString("userMediaListOptions", userInfo?.userMediaListOptions)
 
                     apply()
                 }
@@ -70,7 +75,7 @@ class MainActivity : ComponentActivity() {
                     "First time user log in, storing session token in sharedPrefs and going to ListsScreen"
                 )
                 setContent {
-                    ListsScreen(sessionToken.toString(), sTokenExpiration.toString())
+                    ListsScreen(sharedPreferences)
                 }
             } else {
                 Log.d(TAG, "No user logged in, redirecting to LoginScreen")
@@ -120,9 +125,20 @@ fun LoginScreen() {
  *  Will display MediaList once Apollo3 is installed and configured
  */
 @Composable
-fun ListsScreen(sessionToken: String, sTokenExpiration: String) {
+fun ListsScreen(sharedPreferences: SharedPreferences) {
+    val sessionToken = sharedPreferences.getString("sessionToken", null)
+    val sTokenExpiration = sharedPreferences.getString("sessionTokenExpiry", null)
+    val username = sharedPreferences.getString("username", null)
+    val userID = sharedPreferences.getString("userID", null)
+    val userMediaListOptions = sharedPreferences.getString("userMediaListOptions", null)
+
     Scaffold(modifier = Modifier.fillMaxSize()) {
-        Text("Session Token expiration: " + sTokenExpiration + "\nSession Token: " + sessionToken)
+        Text("username: " + username
+                + "\nuserID: " + userID
+                + "\nuserMediaListOptions: " + userMediaListOptions
+                + "\nSession Token expiration: " + sTokenExpiration
+                + "\nSession Token: " + sessionToken
+        )
     }
 }
 
@@ -134,6 +150,9 @@ fun DefaultPreview() {
     }
 }
 
+/***
+ *
+ */
 suspend fun getUserInfo(session_token: String): User? {
     val TAG = "GetUserInfoTAG"
     var userInfo = User()
