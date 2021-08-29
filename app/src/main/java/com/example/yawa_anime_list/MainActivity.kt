@@ -1,7 +1,7 @@
 package com.example.yawa_anime_list
 
-import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -26,19 +26,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         //get url with session token and bearer from intent
-//        val action: String? = intent?.action;
+        val action: String? = intent?.action;
         val data: Uri? = intent?.data
         //get session token from url
         var sessionToken: String? = data?.fragment?.split("=")?.get(1)?.split("&")?.get(0)
         var sTokenExpiration = data?.fragment?.split("=")?.get(3)
 
-        //shared preferences for session token
+        //shared preferences
         val sharedPreferences = getSharedPreferences("yawa", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
-        if(hasLoggedIn(this)) {
+        if(hasLoggedIn(sharedPreferences)) {
             sessionToken = sharedPreferences.getString("sessionToken", null)
             sTokenExpiration = sharedPreferences.getString("sessionTokenExpiry", null)
             Log.d(TAG, "User has logged in previously")
@@ -65,12 +64,16 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun hasLoggedIn(context: Context): Boolean {
-    //shared preferences for session token
-    val sharedPreferences = context.getSharedPreferences("yawa", ComponentActivity.MODE_PRIVATE)
+/**
+ *  check if session token for user already exists
+ */
+fun hasLoggedIn(sharedPreferences: SharedPreferences): Boolean {
     return sharedPreferences.contains("sessionToken")
 }
 
+/**
+ *  contains button to go to AniList OAuth2 Login page
+ */
 @Composable
 fun LoginScreen() {
     val context = LocalContext.current
@@ -82,11 +85,15 @@ fun LoginScreen() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(onClick = { context.startActivity(intent) }, modifier = Modifier) {
-            Text(text = "Login with Anilist")
+            Text(text = "Login with AniList")
         }
     }
 }
 
+/**
+ *  Display session token and when it expires for now
+ *  Will display MediaList once Apollo3 is installed and configured
+ */
 @Composable
 fun ListsScreen(sessionToken: String, sTokenExpiration: String) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
