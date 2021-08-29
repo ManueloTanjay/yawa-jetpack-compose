@@ -51,8 +51,6 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             if (hasLoggedIn(sharedPreferences)) {
-//                sessionToken = sharedPreferences.getString("sessionToken", null)
-//                sTokenExpiration = sharedPreferences.getString("sessionTokenExpiry", null)
                 Log.d(TAG, "User has logged in previously")
                 setContent {
                     ListsScreen(sharedPreferences)
@@ -87,7 +85,27 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ *  Display session token and when it expires for now
+ *  Will display MediaList once Apollo3 is installed and configured
+ */
+@Composable
+fun ListsScreen(sharedPreferences: SharedPreferences) {
+    val sessionToken = sharedPreferences.getString("sessionToken", null)
+    val sTokenExpiration = sharedPreferences.getString("sessionTokenExpiry", null)
+    val username = sharedPreferences.getString("username", null)
+    val userID = sharedPreferences.getString("userID", null)
+    val userMediaListOptions = sharedPreferences.getString("userMediaListOptions", null)
 
+    Scaffold(modifier = Modifier.fillMaxSize()) {
+        Text("username: " + username
+                + "\nuserID: " + userID
+                + "\nuserMediaListOptions: " + userMediaListOptions
+                + "\nSession Token expiration: " + sTokenExpiration
+                + "\nSession Token: " + sessionToken
+        )
+    }
+}
 
 /**
  *  check if session token for user already exists
@@ -120,28 +138,6 @@ fun LoginScreen() {
     }
 }
 
-/**
- *  Display session token and when it expires for now
- *  Will display MediaList once Apollo3 is installed and configured
- */
-@Composable
-fun ListsScreen(sharedPreferences: SharedPreferences) {
-    val sessionToken = sharedPreferences.getString("sessionToken", null)
-    val sTokenExpiration = sharedPreferences.getString("sessionTokenExpiry", null)
-    val username = sharedPreferences.getString("username", null)
-    val userID = sharedPreferences.getString("userID", null)
-    val userMediaListOptions = sharedPreferences.getString("userMediaListOptions", null)
-
-    Scaffold(modifier = Modifier.fillMaxSize()) {
-        Text("username: " + username
-                + "\nuserID: " + userID
-                + "\nuserMediaListOptions: " + userMediaListOptions
-                + "\nSession Token expiration: " + sTokenExpiration
-                + "\nSession Token: " + sessionToken
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
@@ -151,7 +147,7 @@ fun DefaultPreview() {
 }
 
 /***
- *
+ *  Gets user info by making 2 queries to the anilist API (first for username, userID; second for userMediaListOptions)
  */
 suspend fun getUserInfo(session_token: String): User? {
     val TAG = "GetUserInfoTAG"
