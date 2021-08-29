@@ -1,0 +1,11 @@
+query GetUserMediaListOptions($id: Int!) {
+    user:User(id: $id) {
+        mediaListOptions {
+            scoreFormat
+            rowOrder
+            useLegacyLists
+            sharedTheme
+            sharedThemeEnabled
+        }
+    }
+}
