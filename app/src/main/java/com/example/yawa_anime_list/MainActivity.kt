@@ -1,8 +1,10 @@
 package com.example.yawa_anime_list
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -18,18 +20,55 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.yawa_anime_list.ui.theme.YawaanimelistTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val TAG = "MainActivityTAG"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (true) {
+
+
+        //get url with session token and bearer from intent
+//        val action: String? = intent?.action;
+        val data: Uri? = intent?.data
+        //get session token from url
+        var sessionToken: String? = data?.fragment?.split("=")?.get(1)?.split("&")?.get(0)
+        var sTokenExpiration = data?.fragment?.split("=")?.get(3)
+
+        //shared preferences for session token
+        val sharedPreferences = getSharedPreferences("yawa", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
+        if(hasLoggedIn(this)) {
+            sessionToken = sharedPreferences.getString("sessionToken", null)
+            sTokenExpiration = sharedPreferences.getString("sessionTokenExpiry", null)
+            Log.d(TAG, "User has logged in previously")
+            setContent {
+                ListsScreen(sessionToken.toString(), sTokenExpiration.toString())
+            }
+        } else if (!(sessionToken === null)) {
+            editor.apply {
+                putString("sessionToken", sessionToken)
+                putString("sessionTokenExpiry", sTokenExpiration)
+
+                apply()
+            }
+            Log.d(TAG, "First time user log in, storing session token in sharedPrefs and going to ListsScreen")
+            setContent {
+                ListsScreen(sessionToken.toString(), sTokenExpiration.toString())
+            }
+        } else {
+            Log.d(TAG, "No user logged in, redirecting to LoginScreen")
             setContent {
                 LoginScreen()
             }
-        } else {
-            setContent {
-                ListsScreen()
-            }
         }
     }
+}
+
+fun hasLoggedIn(context: Context): Boolean {
+    //shared preferences for session token
+    val sharedPreferences = context.getSharedPreferences("yawa", ComponentActivity.MODE_PRIVATE)
+    return sharedPreferences.contains("sessionToken")
 }
 
 @Composable
@@ -49,9 +88,9 @@ fun LoginScreen() {
 }
 
 @Composable
-fun ListsScreen() {
+fun ListsScreen(sessionToken: String, sTokenExpiration: String) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
-        Text("Android")
+        Text("Session Token expiration: " + sTokenExpiration + "\nSession Token: " + sessionToken)
     }
 }
 
