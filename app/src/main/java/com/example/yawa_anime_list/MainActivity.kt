@@ -11,7 +11,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -128,13 +127,13 @@ fun DefaultPreview() {
 /***
  *  Gets user info by making 2 queries to the anilist API (first for username, userID; second for userMediaListOptions)
  */
-suspend fun getUserInfo(session_token: String): User? {
+suspend fun getUserInfo(sessionToken: String): User? {
     val TAG = "GetUserInfoTAG"
     val userInfo = User()
     val apolloClient = ApolloClient(
         networkTransport = HttpNetworkTransport(
             serverUrl = "https://graphql.anilist.co/",
-            interceptors = listOf(AuthorizationInterceptor(session_token))
+            interceptors = listOf(AuthorizationInterceptor(sessionToken))
         )
     )
     //get username and userID
