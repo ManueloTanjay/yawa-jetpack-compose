@@ -27,11 +27,11 @@ fun ListsScreen(sharedPreferences: SharedPreferences) {
     val userMediaListOptions = sharedPreferences.getString("userMediaListOptions", null)
 
     val (page, setPage) = remember {
-        mutableStateOf<String?>("")
+        mutableStateOf<GetCurrentAnimeListQuery.Page?>(null)
     }
 
     LaunchedEffect(page) {
-        setPage(getCurrentAnimeList(sessionToken.toString(), 1, username.toString()).toString())
+        setPage(getCurrentAnimeList(sessionToken.toString(), 1, username.toString()))
         Log.d("QQQQ", page.toString())
     }
 
@@ -41,14 +41,18 @@ fun ListsScreen(sharedPreferences: SharedPreferences) {
             .fillMaxSize()
     ) {
         Column() {
-            Text(
-                "username: " + username
-                        + "\nuserID: " + userID
-                        + "\nuserMediaListOptions: " + userMediaListOptions
-                        + "\nSession Token expiration: " + sTokenExpiration
-                        + "\nSession Token: " + sessionToken
-            )
-            Text(page.toString())
+//            Text(
+//                "username: " + username
+//                        + "\nuserID: " + userID
+//                        + "\nuserMediaListOptions: " + userMediaListOptions
+//                        + "\nSession Token expiration: " + sTokenExpiration
+//                        + "\nSession Token: " + sessionToken
+//            )
+//            Button(onClick = {setPage(page)}) {
+//                Text(text = "AAA")
+//            }
+            Text(page?.pageInfo.toString())
+            Text(page?.mediaList.toString())
         }
     }
 }
