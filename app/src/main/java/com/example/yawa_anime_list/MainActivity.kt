@@ -11,6 +11,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -82,28 +83,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-}
-
-/**
- *  Display session token and when it expires for now
- *  Will display MediaList once Apollo3 is installed and configured
- */
-@Composable
-fun ListsScreen(sharedPreferences: SharedPreferences) {
-    val sessionToken = sharedPreferences.getString("sessionToken", null)
-    val sTokenExpiration = sharedPreferences.getString("sessionTokenExpiry", null)
-    val username = sharedPreferences.getString("username", null)
-    val userID = sharedPreferences.getString("userID", null)
-    val userMediaListOptions = sharedPreferences.getString("userMediaListOptions", null)
-
-    Scaffold(modifier = Modifier.fillMaxSize()) {
-        Text("username: " + username
-                + "\nuserID: " + userID
-                + "\nuserMediaListOptions: " + userMediaListOptions
-                + "\nSession Token expiration: " + sTokenExpiration
-                + "\nSession Token: " + sessionToken
-        )
     }
 }
 
