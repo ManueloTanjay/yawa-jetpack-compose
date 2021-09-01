@@ -10,4 +10,7 @@ class Constants {
     val PAUSED = "PAUSED"
     val REPEATING = "REPEATING"
 
+    //  MediaType for specifying if query is for anime or manga
+    val ANIME = "ANIME"
+    val MANGA = "MANGA"
 }
