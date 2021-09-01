@@ -22,6 +22,7 @@ import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
 
 
 /**
@@ -56,7 +57,7 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
             .fillMaxSize()
     ) {
 //        viewModel.liveMedia
-        MediaListItem(viewModel.liveMedia.value, viewModel, sessionToken.toString(), username.toString())
+        MediaListItem(viewModel.liveMedia, viewModel, sessionToken.toString(), username.toString())
 //        Column() {
 ////            Text(
 ////                "username: " + username
@@ -76,16 +77,18 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
 
 @Composable
 fun MediaListItem(
-    liveMedia: List<GetCurrentAnimeListQuery.MediaList?>?,
+    liveMedia: LiveData<List<GetCurrentAnimeListQuery.MediaList?>?>,
     viewModel: ListsScreenViewModel,
     sessionToken: String,
     userName: String
 ) {
+
+    val media by liveMedia.observeAsState(initial = emptyList())
     
     LazyColumn() {
-        itemsIndexed(liveMedia!!.toMutableList()) { index, item ->
+        itemsIndexed(media!!.toList()) { index, item ->
 
-            if (index == liveMedia.lastIndex) {
+            if (index == media?.lastIndex) {
                 Log.d("DEEZ NUTS", "last index")
                 viewModel.getMediaList(sessionToken, userName)
             }
