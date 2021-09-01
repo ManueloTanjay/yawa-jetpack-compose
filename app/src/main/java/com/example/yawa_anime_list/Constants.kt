@@ -13,4 +13,7 @@ class Constants {
     //  MediaType for specifying if query is for anime or manga
     val ANIME = "ANIME"
     val MANGA = "MANGA"
+
+    //  constants for pagination
+    val PERPAGE = 50
 }
