@@ -3,15 +3,25 @@ package com.example.yawa_anime_list
 import GetCurrentAnimeListQuery
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.unit.dp
 
 
 /**
@@ -19,42 +29,74 @@ import com.apollographql.apollo3.network.http.HttpNetworkTransport
  *  Will display MediaList once Apollo3 is installed and configured
  */
 @Composable
-fun ListsScreen(sharedPreferences: SharedPreferences) {
+fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner) {
     val sessionToken = sharedPreferences.getString("sessionToken", null)
     val sTokenExpiration = sharedPreferences.getString("sessionTokenExpiry", null)
     val username = sharedPreferences.getString("username", null)
     val userID = sharedPreferences.getString("userID", null)
     val userMediaListOptions = sharedPreferences.getString("userMediaListOptions", null)
 
-    val (page, setPage) = remember {
-        mutableStateOf<GetCurrentAnimeListQuery.Page?>(null)
-    }
+//    val (page, setPage) = remember {
+//        mutableStateOf<GetCurrentAnimeListQuery.Page?>(null)
+//    }
+//
+//    LaunchedEffect(page) {
+//        setPage(getCurrentAnimeList(sessionToken.toString(), 1, username.toString()))
+//        Log.d("QQQQ", page.toString())
+//    }
 
-    LaunchedEffect(page) {
-        setPage(getCurrentAnimeList(sessionToken.toString(), 1, username.toString()))
-        Log.d("QQQQ", page.toString())
-    }
-
+    val viewModel = ViewModelProvider(store).get(ListsScreenViewModel::class.java)
+    viewModel.getMediaList(sessionToken.toString(), username.toString())
 
     Scaffold(
+        topBar = {
+            TopAppBar(title = { Text("MediaList") })
+        },
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Column() {
-//            Text(
-//                "username: " + username
-//                        + "\nuserID: " + userID
-//                        + "\nuserMediaListOptions: " + userMediaListOptions
-//                        + "\nSession Token expiration: " + sTokenExpiration
-//                        + "\nSession Token: " + sessionToken
-//            )
-//            Button(onClick = {setPage(page)}) {
-//                Text(text = "AAA")
-//            }
-            Text(page?.pageInfo.toString())
-            Text(page?.mediaList.toString())
+//        viewModel.liveMedia
+        MediaListItem(viewModel.liveMedia.value, viewModel, sessionToken.toString(), username.toString())
+//        Column() {
+////            Text(
+////                "username: " + username
+////                        + "\nuserID: " + userID
+////                        + "\nuserMediaListOptions: " + userMediaListOptions
+////                        + "\nSession Token expiration: " + sTokenExpiration
+////                        + "\nSession Token: " + sessionToken
+////            )
+////            Button(onClick = {setPage(page)}) {
+////                Text(text = "AAA")
+////            }
+////            Text(page?.pageInfo.toString())
+////            Text(page?.mediaList.toString())
+//        }
+    }
+}
+
+@Composable
+fun MediaListItem(
+    liveMedia: List<GetCurrentAnimeListQuery.MediaList?>?,
+    viewModel: ListsScreenViewModel,
+    sessionToken: String,
+    userName: String
+) {
+    
+    LazyColumn() {
+        itemsIndexed(liveMedia!!.toMutableList()) { index, item ->
+
+            if (index == liveMedia.lastIndex) {
+                Log.d("DEEZ NUTS", "last index")
+                viewModel.getMediaList(sessionToken, userName)
+            }
+
+            Text(
+                index.toString() + ": " + item?.media?.title?.romaji.toString(),
+                modifier = Modifier.padding(16.dp)
+            )
         }
     }
+
 }
 
 suspend fun getCurrentAnimeList(

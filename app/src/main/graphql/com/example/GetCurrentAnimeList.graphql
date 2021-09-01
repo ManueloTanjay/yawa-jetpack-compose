@@ -7,7 +7,7 @@ query GetCurrentAnimeList ($page: Int, $username: String) {
             hasNextPage
             perPage
         }
-        mediaList(userName: $username, status: CURRENT, type: ANIME) {
+        mediaList(userName: $username, status: COMPLETED, type: ANIME) {
             id
             score
             progress

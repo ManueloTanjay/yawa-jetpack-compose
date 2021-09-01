@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
             if (hasLoggedIn(sharedPreferences)) {
                 Log.d(TAG, "User has logged in previously")
                 setContent {
-                    ListsScreen(sharedPreferences)
+                    ListsScreen(sharedPreferences, this@MainActivity)
                 }
             } else if (!(sessionToken === null)) {
                 //get userInfo
@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
                     "First time user log in, storing session token in sharedPrefs and going to ListsScreen"
                 )
                 setContent {
-                    ListsScreen(sharedPreferences)
+                    ListsScreen(sharedPreferences, this@MainActivity)
                 }
             } else {
                 Log.d(TAG, "No user logged in, redirecting to LoginScreen")
