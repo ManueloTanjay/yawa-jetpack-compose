@@ -3,12 +3,13 @@ package com.example.yawa_anime_list
 import GetCurrentAnimeListQuery
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -21,8 +22,12 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
+import coil.compose.rememberImagePainter
 
 
 /**
@@ -55,23 +60,9 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
         },
         modifier = Modifier
             .fillMaxSize()
+
     ) {
-//        viewModel.liveMedia
         MediaListItem(viewModel.liveMedia, viewModel, sessionToken.toString(), username.toString())
-//        Column() {
-////            Text(
-////                "username: " + username
-////                        + "\nuserID: " + userID
-////                        + "\nuserMediaListOptions: " + userMediaListOptions
-////                        + "\nSession Token expiration: " + sTokenExpiration
-////                        + "\nSession Token: " + sessionToken
-////            )
-////            Button(onClick = {setPage(page)}) {
-////                Text(text = "AAA")
-////            }
-////            Text(page?.pageInfo.toString())
-////            Text(page?.mediaList.toString())
-//        }
     }
 }
 
@@ -84,19 +75,46 @@ fun MediaListItem(
 ) {
 
     val media by liveMedia.observeAsState(initial = emptyList())
-    
-    LazyColumn() {
+
+    LazyColumn(
+        modifier = Modifier
+            .background(Color.Gray)
+
+    ) {
         itemsIndexed(media!!.toList()) { index, item ->
 
-            if (index == media?.lastIndex) {
+            if (index == media?.lastIndex?.minus(10)) {
                 Log.d("DEEZ NUTS", "last index")
                 viewModel.getMediaList(sessionToken, userName)
             }
+            Row(
+                modifier = Modifier
+                    .padding(4.dp)
+                    .background(Color.Red)
+                    .fillParentMaxWidth()
+            ) {
+                Image(
+                    painter = rememberImagePainter(item?.media?.coverImage?.medium),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(96.dp, 128.dp)
+                        .background(Color.Green)
+                )
+                Text(
+                    index.toString() + ": " + item?.media?.title?.romaji.toString(),
+                    modifier = Modifier
+//                        .padding(10.dp)
+                        .background(Color.Yellow)
+                )
+            }
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(15.dp),
+                elevation = 5.dp
+            ) {
 
-            Text(
-                index.toString() + ": " + item?.media?.title?.romaji.toString(),
-                modifier = Modifier.padding(16.dp)
-            )
+            }
         }
     }
 
