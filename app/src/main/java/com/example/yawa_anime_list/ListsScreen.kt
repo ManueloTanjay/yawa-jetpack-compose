@@ -41,15 +41,6 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
     val userID = sharedPreferences.getString("userID", null)
     val userMediaListOptions = sharedPreferences.getString("userMediaListOptions", null)
 
-//    val (page, setPage) = remember {
-//        mutableStateOf<GetCurrentAnimeListQuery.Page?>(null)
-//    }
-//
-//    LaunchedEffect(page) {
-//        setPage(getCurrentAnimeList(sessionToken.toString(), 1, username.toString()))
-//        Log.d("QQQQ", page.toString())
-//    }
-
     val viewModel = ViewModelProvider(store).get(ListsScreenViewModel::class.java)
     viewModel.getMediaList(sessionToken.toString(), username.toString())
 
@@ -113,7 +104,7 @@ fun MediaItem (modifier: Modifier, index: Int, item: GetCurrentAnimeListQuery.Me
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(96.dp, 128.dp)
-                .background(Color.Green)
+                .background(Color.Gray)
         )
         Text(
             item?.media?.title?.romaji.toString(),
