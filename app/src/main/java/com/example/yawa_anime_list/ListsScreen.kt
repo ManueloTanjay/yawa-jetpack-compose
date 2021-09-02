@@ -22,7 +22,6 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -62,24 +61,22 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
             .fillMaxSize()
 
     ) {
-        MediaListItem(viewModel.liveMedia, viewModel, sessionToken.toString(), username.toString())
+        MediaList(viewModel.liveMedia, viewModel, sessionToken.toString(), username.toString())
     }
 }
 
 @Composable
-fun MediaListItem(
+fun MediaList(
     liveMedia: LiveData<List<GetCurrentAnimeListQuery.MediaList?>?>,
     viewModel: ListsScreenViewModel,
     sessionToken: String,
     userName: String
 ) {
-
     val media by liveMedia.observeAsState(initial = emptyList())
 
     LazyColumn(
         modifier = Modifier
-            .background(Color.Gray)
-
+            .background(Color(0xff404040))
     ) {
         itemsIndexed(media!!.toList()) { index, item ->
 
@@ -87,37 +84,44 @@ fun MediaListItem(
                 Log.d("DEEZ NUTS", "last index")
                 viewModel.getMediaList(sessionToken, userName)
             }
-            Row(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .background(Color.Red)
-                    .fillParentMaxWidth()
-            ) {
-                Image(
-                    painter = rememberImagePainter(item?.media?.coverImage?.medium),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(96.dp, 128.dp)
-                        .background(Color.Green)
-                )
-                Text(
-                    index.toString() + ": " + item?.media?.title?.romaji.toString(),
-                    modifier = Modifier
-//                        .padding(10.dp)
-                        .background(Color.Yellow)
-                )
-            }
             Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(15.dp),
-                elevation = 5.dp
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
+                shape = RoundedCornerShape(4.dp),
+                elevation = 2.dp
             ) {
-
+                MediaItem(
+                    modifier = Modifier
+                        .padding(0.dp)
+                        .background(Color(0xff252525))
+                        .fillParentMaxWidth(), index = index, item = item
+                )
             }
         }
     }
+}
 
+@Composable
+fun MediaItem (modifier: Modifier, index: Int, item: GetCurrentAnimeListQuery.MediaList?) {
+    Row(
+        modifier = modifier
+    ) {
+        Image(
+            painter = rememberImagePainter(item?.media?.coverImage?.medium),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(96.dp, 128.dp)
+                .background(Color.Green)
+        )
+        Text(
+            item?.media?.title?.romaji.toString(),
+            modifier = Modifier
+//                        .padding(10.dp)
+                .background(Color.Yellow)
+        )
+    }
 }
 
 suspend fun getCurrentAnimeList(
