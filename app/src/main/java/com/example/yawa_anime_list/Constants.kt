@@ -1,6 +1,8 @@
 package com.example.yawa_anime_list
 
-class Constants {
+import androidx.compose.ui.unit.dp
+
+object Constants {
 
     //  MediaListStatus for mediaList queries, paired with username or userID, query authenticated with sessionToken
     val CURRENT = "CURRENT"
@@ -16,4 +18,8 @@ class Constants {
 
     //  constants for pagination
     val PERPAGE = 50
+
+    //  image constants
+    val IMAGE_WIDTH = 96.dp
+    val IMAGE_HEIGHT = 128.dp
 }

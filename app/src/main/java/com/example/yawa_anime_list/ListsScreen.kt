@@ -103,7 +103,7 @@ fun MediaItem (modifier: Modifier, index: Int, item: GetCurrentAnimeListQuery.Me
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(96.dp, 128.dp)
+                .size(Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT)
                 .background(Color.Gray)
         )
         Text(
