@@ -1,6 +1,7 @@
 package com.example.yawa_anime_list
 
 import GetCurrentAnimeListQuery
+import GetMediaListQuery
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -130,6 +131,7 @@ suspend fun getAnimeList(
 
     val userCurrentAnimeList = try {
         apolloClient.query(GetCurrentAnimeListQuery(page, userName))
+//        apolloClient.query(GetMediaListQuery(page, userName, Constants.CURRENT, Constants.MANGA))
     } catch (e: ApolloException) {
         Log.d("GETUSERMEDISLISTOPTIONS", e.toString())
         return null
