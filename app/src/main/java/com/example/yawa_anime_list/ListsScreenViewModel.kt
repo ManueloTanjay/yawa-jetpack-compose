@@ -36,35 +36,6 @@ class ListsScreenViewModel : ViewModel() {
         nextPage++
     }
 
-    suspend fun getCurrentAnimeList(
-        sessionToken: String,
-        page: Int,
-        userName: String
-    ): List<GetCurrentAnimeListQuery.MediaList?>? {
-
-        val apolloClient = ApolloClient(
-            networkTransport = HttpNetworkTransport(
-                serverUrl = "https://graphql.anilist.co/",
-                interceptors = listOf(AuthorizationInterceptor(sessionToken))
-            )
-        )
-
-        val userCurrentAnimeList = try {
-            apolloClient.query(GetCurrentAnimeListQuery(page, userName))
-        } catch (e: ApolloException) {
-            Log.d("GETUSERMEDISLISTOPTIONS", e.toString())
-            return null
-        }
-
-        val userCurrentAnimeListData = userCurrentAnimeList.data?.page
-        if (userCurrentAnimeListData == null || userCurrentAnimeList.hasErrors()) {
-            return null
-        }
-
-        Log.d("USERCURRANIDATA", userCurrentAnimeListData.toString())
-        return userCurrentAnimeListData.mediaList
-    }
-
 
     suspend fun getAnimeList(
         sessionToken: String,
@@ -93,6 +64,35 @@ class ListsScreenViewModel : ViewModel() {
 
         Log.d("USERCURRANIDATA", userCurrentAnimeListData.toString())
         return userCurrentAnimeListData
+    }
+
+    suspend fun getCurrentAnimeList(
+        sessionToken: String,
+        page: Int,
+        userName: String
+    ): List<GetCurrentAnimeListQuery.MediaList?>? {
+
+        val apolloClient = ApolloClient(
+            networkTransport = HttpNetworkTransport(
+                serverUrl = "https://graphql.anilist.co/",
+                interceptors = listOf(AuthorizationInterceptor(sessionToken))
+            )
+        )
+
+        val userCurrentAnimeList = try {
+            apolloClient.query(GetCurrentAnimeListQuery(page, userName))
+        } catch (e: ApolloException) {
+            Log.d("GETUSERMEDISLISTOPTIONS", e.toString())
+            return null
+        }
+
+        val userCurrentAnimeListData = userCurrentAnimeList.data?.page
+        if (userCurrentAnimeListData == null || userCurrentAnimeList.hasErrors()) {
+            return null
+        }
+
+        Log.d("USERCURRANIDATA", userCurrentAnimeListData.toString())
+        return userCurrentAnimeListData.mediaList
     }
 }
 

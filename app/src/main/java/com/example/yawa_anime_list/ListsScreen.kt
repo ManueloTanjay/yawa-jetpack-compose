@@ -68,7 +68,7 @@ fun MediaList(
 
     LazyColumn(
         modifier = Modifier
-            .background(Color(0xff404040))
+            .background(Constants.CARDCOLOR)
     ) {
         itemsIndexed(media!!.toList()) { index, item ->
 
@@ -86,7 +86,7 @@ fun MediaList(
                 MediaItem(
                     modifier = Modifier
                         .padding(0.dp)
-                        .background(Color(0xff252525))
+                        .background(Constants.BGCOLOR)
                         .fillParentMaxWidth(), index = index, item = item
                 )
             }

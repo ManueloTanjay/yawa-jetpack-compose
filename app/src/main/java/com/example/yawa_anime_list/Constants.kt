@@ -1,5 +1,6 @@
 package com.example.yawa_anime_list
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import type.MediaListStatus
 import type.MediaType
@@ -24,4 +25,8 @@ object Constants {
     //  image constants
     val IMAGE_WIDTH = 104.dp
     val IMAGE_HEIGHT = 130.dp
+
+    // bg and card colors
+    val CARDCOLOR = Color(0xff353535)
+    val BGCOLOR = Color(0xff404040)
 }
