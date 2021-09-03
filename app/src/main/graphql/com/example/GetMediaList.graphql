@@ -1,0 +1,28 @@
+query GetMediaList ($page: Int, $username: String, $status: MediaListStatus, $type: MediaType) {
+    page:Page (page: $page, perPage: 50) {
+        pageInfo {
+            total
+            currentPage
+            lastPage
+            hasNextPage
+            perPage
+        }
+        mediaList(userName: $username, status: $status, type: $type) {
+            id
+            score
+            progress
+            media {
+                id
+                episodes
+                title {
+                    english
+                    romaji
+                    native
+                }
+                coverImage {
+                        medium
+                }
+            }
+        }
+    }
+}
