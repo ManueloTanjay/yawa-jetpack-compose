@@ -115,7 +115,7 @@ fun MediaItem (modifier: Modifier, index: Int, item: GetCurrentAnimeListQuery.Me
     }
 }
 
-suspend fun getCurrentAnimeList(
+suspend fun getAnimeList(
     sessionToken: String,
     page: Int,
     userName: String

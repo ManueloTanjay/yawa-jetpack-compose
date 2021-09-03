@@ -9,22 +9,30 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import kotlinx.coroutines.runBlocking
 
-class ListsScreenViewModel: ViewModel() {
+class ListsScreenViewModel : ViewModel() {
 
     val liveMedia = MutableLiveData<List<GetCurrentAnimeListQuery.MediaList?>?>()
     private var nextPage = 1
+    private var hasNextPage = true
 
     fun getMediaList(sessionToken: String, userName: String) {
         val media = liveMedia.value?.toMutableList() ?: mutableListOf()
 
+        if (!hasNextPage) {
+            Log.d("GETMEDIALIST", "Does not have next page")
+            return
+        }
+
         runBlocking {
-            media.addAll(getCurrentAnimeList(sessionToken, nextPage, userName)!!.toMutableList())
+//            media.addAll(getCurrentAnimeList(sessionToken, nextPage, userName)!!.toMutableList())
             Log.d("RUNBLOCKING", media.size.toString())
-//            getCurrentAnimeList(sessionToken, nextPage, userName)!!.toCollection(liveMedia)
+
+            var page = getAnimeList(sessionToken, nextPage, userName)
+            hasNextPage = page?.pageInfo?.hasNextPage ?: false
+            media.addAll(page?.mediaList!!.toMutableList())
         }
 
         liveMedia.value = media
-//        Log.d("GETMEDIALIST", liveMedia.value.toString())
         nextPage++
     }
 
@@ -32,10 +40,7 @@ class ListsScreenViewModel: ViewModel() {
         sessionToken: String,
         page: Int,
         userName: String
-    ):
-//            GetCurrentAnimeListQuery.Page?
-    List<GetCurrentAnimeListQuery.MediaList?>?
-    {
+    ): List<GetCurrentAnimeListQuery.MediaList?>? {
 
         val apolloClient = ApolloClient(
             networkTransport = HttpNetworkTransport(
@@ -60,4 +65,34 @@ class ListsScreenViewModel: ViewModel() {
         return userCurrentAnimeListData.mediaList
     }
 
+
+    suspend fun getAnimeList(
+        sessionToken: String,
+        page: Int,
+        userName: String
+    ): GetCurrentAnimeListQuery.Page? {
+
+        val apolloClient = ApolloClient(
+            networkTransport = HttpNetworkTransport(
+                serverUrl = "https://graphql.anilist.co/",
+                interceptors = listOf(AuthorizationInterceptor(sessionToken))
+            )
+        )
+
+        val userCurrentAnimeList = try {
+            apolloClient.query(GetCurrentAnimeListQuery(page, userName))
+        } catch (e: ApolloException) {
+            Log.d("GETUSERMEDISLISTOPTIONS", e.toString())
+            return null
+        }
+
+        val userCurrentAnimeListData = userCurrentAnimeList.data?.page
+        if (userCurrentAnimeListData == null || userCurrentAnimeList.hasErrors()) {
+            return null
+        }
+
+        Log.d("USERCURRANIDATA", userCurrentAnimeListData.toString())
+        return userCurrentAnimeListData
+    }
 }
+
