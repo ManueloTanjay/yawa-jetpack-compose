@@ -28,7 +28,7 @@ class ListsScreenViewModel : ViewModel() {
             Log.d("RUNBLOCKING", media.size.toString())
 
             var page = getAnimeList(sessionToken, nextPage, userName)
-            hasNextPage = page?.pageInfo?.hasNextPage ?: false
+            hasNextPage = page?.pageInfo?.hasNextPage ?: true
             media.addAll(page?.mediaList!!.toMutableList())
         }
 
