@@ -22,6 +22,6 @@ object Constants {
     val PERPAGE = 50
 
     //  image constants
-    val IMAGE_WIDTH = 96.dp
-    val IMAGE_HEIGHT = 128.dp
+    val IMAGE_WIDTH = 104.dp
+    val IMAGE_HEIGHT = 130.dp
 }
