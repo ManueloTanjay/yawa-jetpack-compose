@@ -68,7 +68,7 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
 
 @Composable
 fun MediaList(
-    liveMedia: LiveData<List<GetCurrentAnimeListQuery.MediaList?>?>,
+    liveMedia: LiveData<List<GetMediaListQuery.MediaList?>?>,
     viewModel: ListsScreenViewModel,
     sessionToken: String,
     userName: String,
@@ -112,7 +112,7 @@ fun MediaList(
 }
 
 @Composable
-fun MediaItem(modifier: Modifier, index: Int, item: GetCurrentAnimeListQuery.MediaList?) {
+fun MediaItem(modifier: Modifier, index: Int, item: GetMediaListQuery.MediaList?) {
     Row(
         modifier = modifier
     ) {

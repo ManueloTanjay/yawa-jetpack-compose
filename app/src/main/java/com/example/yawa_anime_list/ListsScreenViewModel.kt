@@ -1,6 +1,7 @@
 package com.example.yawa_anime_list
 
 import GetCurrentAnimeListQuery
+import GetMediaListQuery
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,10 +9,12 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import kotlinx.coroutines.runBlocking
+import type.MediaListStatus
+import type.MediaType
 
 class ListsScreenViewModel : ViewModel() {
 
-    val liveMedia = MutableLiveData<List<GetCurrentAnimeListQuery.MediaList?>?>()
+    val liveMedia = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
     private var nextPage = 1
     private var hasNextPage = true
 
@@ -27,7 +30,7 @@ class ListsScreenViewModel : ViewModel() {
 //            media.addAll(getCurrentAnimeList(sessionToken, nextPage, userName)!!.toMutableList())
             Log.d("RUNBLOCKING", media.size.toString())
 
-            var page = getAnimeList(sessionToken, nextPage, userName)
+            var page = getMediaList(sessionToken, nextPage, userName)
             hasNextPage = page?.pageInfo?.hasNextPage ?: true
             media.addAll(page?.mediaList!!.toMutableList())
         }
@@ -37,11 +40,11 @@ class ListsScreenViewModel : ViewModel() {
     }
 
 
-    suspend fun getAnimeList(
+    private suspend fun getMediaList(
         sessionToken: String,
         page: Int,
         userName: String
-    ): GetCurrentAnimeListQuery.Page? {
+    ): GetMediaListQuery.Page? {
 
         val apolloClient = ApolloClient(
             networkTransport = HttpNetworkTransport(
@@ -51,7 +54,8 @@ class ListsScreenViewModel : ViewModel() {
         )
 
         val userCurrentAnimeList = try {
-            apolloClient.query(GetCurrentAnimeListQuery(page, userName))
+//            apolloClient.query(GetCurrentAnimeListQuery(page, userName))
+            apolloClient.query(GetMediaListQuery(page, userName, MediaListStatus.COMPLETED, MediaType.ANIME))
         } catch (e: ApolloException) {
             Log.d("GETUSERMEDISLISTOPTIONS", e.toString())
             return null
