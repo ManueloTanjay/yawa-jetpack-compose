@@ -27,6 +27,10 @@ object Constants {
     val IMAGE_HEIGHT = 130.dp
 
     // bg and card colors
-    val CARDCOLOR = Color(0xff353535)
-    val BGCOLOR = Color(0xff404040)
+    val CARDCOLOR = Color(0xff404040)
+    val BGCOLOR = Color(0xff353535)
+//    val CARDCOLOR = Color(0xffffffff)
+//    val BGCOLOR = Color(0xffffffff)
+
+    val SCROLLBARCOLOR = Color(0xff505050)
 }

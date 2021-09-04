@@ -4,11 +4,16 @@ import GetCurrentAnimeListQuery
 import GetMediaListQuery
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Scaffold
@@ -23,8 +28,12 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import coil.compose.rememberImagePainter
@@ -62,13 +71,15 @@ fun MediaList(
     liveMedia: LiveData<List<GetCurrentAnimeListQuery.MediaList?>?>,
     viewModel: ListsScreenViewModel,
     sessionToken: String,
-    userName: String
+    userName: String,
 ) {
     val media by liveMedia.observeAsState(initial = emptyList())
+    val listState = rememberLazyListState()
 
     LazyColumn(
+        state = listState,
         modifier = Modifier
-            .background(Constants.CARDCOLOR)
+            .background(Constants.BGCOLOR)
     ) {
         itemsIndexed(media!!.toList()) { index, item ->
 
@@ -79,14 +90,20 @@ fun MediaList(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(4.dp),
+                    .padding(4.dp)
+                    .clickable {
+                        Log.d(
+                            "CARD_CLICKED",
+                            item?.media?.title?.romaji.toString() + " clicked"
+                        )
+                    },
                 shape = RoundedCornerShape(4.dp),
-                elevation = 2.dp
+                elevation = 8.dp
             ) {
                 MediaItem(
                     modifier = Modifier
                         .padding(0.dp)
-                        .background(Constants.BGCOLOR)
+                        .background(Constants.CARDCOLOR)
                         .fillParentMaxWidth(), index = index, item = item
                 )
             }
@@ -95,7 +112,7 @@ fun MediaList(
 }
 
 @Composable
-fun MediaItem (modifier: Modifier, index: Int, item: GetCurrentAnimeListQuery.MediaList?) {
+fun MediaItem(modifier: Modifier, index: Int, item: GetCurrentAnimeListQuery.MediaList?) {
     Row(
         modifier = modifier
     ) {
@@ -114,34 +131,4 @@ fun MediaItem (modifier: Modifier, index: Int, item: GetCurrentAnimeListQuery.Me
                 .background(Color.Yellow)
         )
     }
-}
-
-suspend fun getAnimeList(
-    sessionToken: String,
-    page: Int,
-    userName: String
-): GetCurrentAnimeListQuery.Page? {
-
-    val apolloClient = ApolloClient(
-        networkTransport = HttpNetworkTransport(
-            serverUrl = "https://graphql.anilist.co/",
-            interceptors = listOf(AuthorizationInterceptor(sessionToken))
-        )
-    )
-
-    val userCurrentAnimeList = try {
-        apolloClient.query(GetCurrentAnimeListQuery(page, userName))
-//        apolloClient.query(GetMediaListQuery(page, userName, Constants.CURRENT, Constants.MANGA))
-    } catch (e: ApolloException) {
-        Log.d("GETUSERMEDISLISTOPTIONS", e.toString())
-        return null
-    }
-
-    val userCurrentAnimeListData = userCurrentAnimeList.data?.page
-    if (userCurrentAnimeListData == null || userCurrentAnimeList.hasErrors()) {
-        return null
-    }
-
-    Log.d("USERCURRANIDATA", userCurrentAnimeListData.toString())
-    return userCurrentAnimeListData
 }
