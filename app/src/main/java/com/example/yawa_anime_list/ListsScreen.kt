@@ -108,7 +108,7 @@ fun MediaList(
                 shape = RoundedCornerShape(4.dp),
                 elevation = 8.dp
             ) {
-                AnimeItem(
+                MediaItem(
                     modifier = Modifier
                         .padding(0.dp)
                         .background(Constants.CARDCOLOR)
@@ -124,7 +124,7 @@ fun MediaList(
 }
 
 @Composable
-fun AnimeItem(
+fun MediaItem(
     modifier: Modifier,
     index: Int,
     item: GetMediaListQuery.MediaList?,
