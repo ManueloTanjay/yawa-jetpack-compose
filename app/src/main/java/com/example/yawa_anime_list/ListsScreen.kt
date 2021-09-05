@@ -49,7 +49,7 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
         sessionToken.toString(),
         username.toString(),
         Constants.COMPLETED,
-        Constants.MANGA
+        Constants.ANIME
     )
 
     Scaffold(
@@ -66,7 +66,7 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
             sessionToken.toString(),
             username.toString(),
             Constants.COMPLETED,
-            Constants.MANGA
+            Constants.ANIME
         )
     }
 }
@@ -146,8 +146,8 @@ fun AnimeItem(
         )
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .height(Constants.IMAGE_HEIGHT),
+                .height(Constants.IMAGE_HEIGHT)
+                .fillMaxWidth(),
 //                .background(Color.Green),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround
@@ -159,37 +159,51 @@ fun AnimeItem(
                     .background(Color.Yellow)
             )
             if (mediaType == Constants.ANIME) {
-                Text(
-                    text = "Score: " + item?.score.toString() + "/10.0",
-                    modifier = Modifier
-//                        .padding(10.dp)
-                        .background(Color.Yellow)
-                )
-                Text(
-                    text = "Progress: " + item?.progress + "/" + item?.media?.episodes.toString(),
-                    modifier = Modifier
-                        .background(Color.Yellow)
-                )
+                AnimeProgress(item = item)
             } else {
-                Text(
-                    text = "Score: " + item?.score.toString() + "/10.0",
-                    modifier = Modifier
-                        .background(Color.Yellow)
-                )
-                Text(
-                    text = "Chapters: " + item?.progress + "/" + item?.media?.chapters,
-                    modifier = Modifier
-//                        .padding(10.dp)
-                        .background(Color.Yellow)
-                )
-                Text(
-                    text = "Volumes: " + item?.progressVolumes + "/" + item?.media?.volumes,
-                    modifier = Modifier
-                        .background(Color.Yellow)
-                )
+                MangaProgress(item = item)
             }
         }
     }
+}
+
+@Composable
+fun AnimeProgress(
+    item: GetMediaListQuery.MediaList?,
+) {
+    Text(
+        text = "Score: " + item?.score.toString() + "/10.0",
+        modifier = Modifier
+//                        .padding(10.dp)
+            .background(Color.Yellow)
+    )
+    Text(
+        text = "Progress: " + item?.progress + "/" + item?.media?.episodes.toString(),
+        modifier = Modifier
+            .background(Color.Yellow)
+    )
+}
+
+@Composable
+fun MangaProgress(
+    item: GetMediaListQuery.MediaList?,
+) {
+    Text(
+        text = "Score: " + item?.score.toString() + "/10.0",
+        modifier = Modifier
+            .background(Color.Yellow)
+    )
+    Text(
+        text = "Chapters: " + item?.progress + "/" + item?.media?.chapters,
+        modifier = Modifier
+//                        .padding(10.dp)
+            .background(Color.Yellow)
+    )
+    Text(
+        text = "Volumes: " + item?.progressVolumes + "/" + item?.media?.volumes,
+        modifier = Modifier
+            .background(Color.Yellow)
+    )
 }
 
 //Create Composable for MangaItem that uses the same MediaList query but has a different
