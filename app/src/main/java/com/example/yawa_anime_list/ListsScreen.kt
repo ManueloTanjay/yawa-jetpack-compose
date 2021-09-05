@@ -23,7 +23,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import coil.compose.rememberImagePainter
-import type.MediaType
 
 
 /**
@@ -91,7 +90,7 @@ fun MediaList(
                 shape = RoundedCornerShape(4.dp),
                 elevation = 8.dp
             ) {
-                MediaItem(
+                AnimeItem(
                     modifier = Modifier
                         .padding(0.dp)
                         .background(Constants.CARDCOLOR)
@@ -103,7 +102,7 @@ fun MediaList(
 }
 
 @Composable
-fun MediaItem(modifier: Modifier, index: Int, item: GetMediaListQuery.MediaList?) {
+fun AnimeItem(modifier: Modifier, index: Int, item: GetMediaListQuery.MediaList?) {
     Row(
         modifier = modifier
     ) {
@@ -123,3 +122,6 @@ fun MediaItem(modifier: Modifier, index: Int, item: GetMediaListQuery.MediaList?
         )
     }
 }
+
+//Create Composable for MangaItem that uses the same MediaList query but has a different
+//field (chapters instead of episodes) to keep track of progress
