@@ -23,6 +23,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import coil.compose.rememberImagePainter
+import type.MediaListStatus
+import type.MediaType
 
 
 /**
@@ -52,7 +54,7 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
             .fillMaxSize()
 
     ) {
-        MediaList(viewModel.liveMedia, viewModel, sessionToken.toString(), username.toString())
+        MediaList(viewModel.liveMedia, viewModel, sessionToken.toString(), username.toString(), Constants.COMPLETED, Constants.ANIME)
     }
 }
 
@@ -62,6 +64,8 @@ fun MediaList(
     viewModel: ListsScreenViewModel,
     sessionToken: String,
     userName: String,
+    mediaListStatus: MediaListStatus,
+    mediaType: MediaType
 ) {
     val media by liveMedia.observeAsState(initial = emptyList())
     val listState = rememberLazyListState()
@@ -75,7 +79,7 @@ fun MediaList(
 
             if (index == media?.lastIndex?.minus(10)) {
                 Log.d("DEEZ NUTS", "last index")
-                viewModel.getMediaList(sessionToken, userName, Constants.COMPLETED, Constants.ANIME)
+                viewModel.getMediaList(sessionToken, userName, mediaListStatus, mediaType)
             }
             Card(
                 modifier = Modifier
@@ -120,6 +124,7 @@ fun AnimeItem(modifier: Modifier, index: Int, item: GetMediaListQuery.MediaList?
 //                        .padding(10.dp)
                 .background(Color.Yellow)
         )
+//        if ()
     }
 }
 
