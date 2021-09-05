@@ -71,6 +71,10 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
     }
 }
 
+/**
+ *  Layout for a list of MediaItems
+ *  LazyColumn that represents each item with a Card that contains a MediaItem
+ */
 @Composable
 fun MediaList(
     liveMedia: LiveData<List<GetMediaListQuery.MediaList?>?>,
@@ -113,9 +117,7 @@ fun MediaList(
                         .padding(0.dp)
                         .background(Constants.CARDCOLOR)
                         .fillMaxSize(),
-                    index = index,
                     item = item,
-                    mediaListStatus,
                     mediaType
                 )
             }
@@ -123,12 +125,15 @@ fun MediaList(
     }
 }
 
+
+/**
+ *   Layout representing a MediaItem which is made up of an Image, title, score, and progress
+ *   works for both anime and manga (they have different ways of tracking progress)
+ */
 @Composable
 fun MediaItem(
     modifier: Modifier,
-    index: Int,
     item: GetMediaListQuery.MediaList?,
-    mediaListStatus: MediaListStatus,
     mediaType: MediaType
 ) {
     Row(
@@ -155,8 +160,8 @@ fun MediaItem(
             Text(
                 item?.media?.title?.romaji.toString(),
                 modifier = Modifier
-//                        .padding(10.dp)
                     .background(Color.Yellow)
+//                    .padding(15.dp)
             )
             if (mediaType == Constants.ANIME) {
                 AnimeProgress(item = item)
@@ -167,6 +172,9 @@ fun MediaItem(
     }
 }
 
+/**
+ *  Layout for anime stats which only tracks episodes
+ */
 @Composable
 fun AnimeProgress(
     item: GetMediaListQuery.MediaList?,
@@ -184,6 +192,9 @@ fun AnimeProgress(
     )
 }
 
+/**
+ *  Layout for manga progress which tracks both chapters and volumes
+ */
 @Composable
 fun MangaProgress(
     item: GetMediaListQuery.MediaList?,
@@ -205,6 +216,3 @@ fun MangaProgress(
             .background(Color.Yellow)
     )
 }
-
-//Create Composable for MangaItem that uses the same MediaList query but has a different
-//field (chapters instead of episodes) to keep track of progress
