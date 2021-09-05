@@ -23,14 +23,15 @@ object Constants {
     val PERPAGE = 50
 
     //  image constants
-    val IMAGE_WIDTH = 104.dp
-    val IMAGE_HEIGHT = 130.dp
+    val IMAGE_WIDTH = 112.dp
+    val IMAGE_HEIGHT = 150.dp
 
-    // bg and card colors
+    //  colors
     val CARDCOLOR = Color(0xff404040)
     val BGCOLOR = Color(0xff353535)
+    val FONTCOLOR = Color(0xffffffff)
 //    val CARDCOLOR = Color(0xffffffff)
 //    val BGCOLOR = Color(0xffffffff)
 
-    val SCROLLBARCOLOR = Color(0xff505050)
+
 }

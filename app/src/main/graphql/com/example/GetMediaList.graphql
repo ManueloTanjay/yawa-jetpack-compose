@@ -23,7 +23,8 @@ query GetMediaList ($page: Int, $username: String, $status: MediaListStatus, $ty
                     native
                 }
                 coverImage {
-                        medium
+                    medium
+                    large
                 }
             }
         }

@@ -59,8 +59,8 @@ class ListsScreenViewModel : ViewModel() {
                 GetMediaListQuery(
                     page,
                     userName,
-                    MediaListStatus.COMPLETED,
-                    MediaType.ANIME
+                    mediaListStatus,
+                    mediaType
                 )
             )
         } catch (e: ApolloException) {
