@@ -11,9 +11,12 @@ query GetMediaList ($page: Int, $username: String, $status: MediaListStatus, $ty
             id
             score
             progress
+            progressVolumes
             media {
                 id
                 episodes
+                chapters
+                volumes
                 title {
                     english
                     romaji
