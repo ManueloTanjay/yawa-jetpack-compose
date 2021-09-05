@@ -1,6 +1,5 @@
 package com.example.yawa_anime_list
 
-import GetCurrentAnimeListQuery
 import GetMediaListQuery
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -30,7 +29,7 @@ class ListsScreenViewModel : ViewModel() {
 //            media.addAll(getCurrentAnimeList(sessionToken, nextPage, userName)!!.toMutableList())
             Log.d("RUNBLOCKING", media.size.toString())
 
-            var page = getMediaList(sessionToken, nextPage, userName, mediaListStatus, mediaType)
+            var page = getMediaListAPI(sessionToken, nextPage, userName, mediaListStatus, mediaType)
             hasNextPage = page?.pageInfo?.hasNextPage ?: true
             media.addAll(page?.mediaList!!.toMutableList())
         }
@@ -40,7 +39,7 @@ class ListsScreenViewModel : ViewModel() {
     }
 
 
-    private suspend fun getMediaList(
+    private suspend fun getMediaListAPI(
         sessionToken: String,
         page: Int,
         userName: String,
