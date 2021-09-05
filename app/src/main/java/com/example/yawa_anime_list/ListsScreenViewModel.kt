@@ -18,7 +18,7 @@ class ListsScreenViewModel : ViewModel() {
     private var nextPage = 1
     private var hasNextPage = true
 
-    fun getMediaList(sessionToken: String, userName: String) {
+    fun getMediaList(sessionToken: String, userName: String, mediaListStatus: MediaListStatus, mediaType: MediaType) {
         val media = liveMedia.value?.toMutableList() ?: mutableListOf()
 
         if (!hasNextPage) {
@@ -30,7 +30,7 @@ class ListsScreenViewModel : ViewModel() {
 //            media.addAll(getCurrentAnimeList(sessionToken, nextPage, userName)!!.toMutableList())
             Log.d("RUNBLOCKING", media.size.toString())
 
-            var page = getMediaList(sessionToken, nextPage, userName)
+            var page = getMediaList(sessionToken, nextPage, userName, mediaListStatus, mediaType)
             hasNextPage = page?.pageInfo?.hasNextPage ?: true
             media.addAll(page?.mediaList!!.toMutableList())
         }
@@ -43,7 +43,9 @@ class ListsScreenViewModel : ViewModel() {
     private suspend fun getMediaList(
         sessionToken: String,
         page: Int,
-        userName: String
+        userName: String,
+        mediaListStatus: MediaListStatus,
+        mediaType: MediaType
     ): GetMediaListQuery.Page? {
 
         val apolloClient = ApolloClient(
@@ -54,7 +56,6 @@ class ListsScreenViewModel : ViewModel() {
         )
 
         val userCurrentAnimeList = try {
-//            apolloClient.query(GetCurrentAnimeListQuery(page, userName))
             apolloClient.query(
                 GetMediaListQuery(
                     page,

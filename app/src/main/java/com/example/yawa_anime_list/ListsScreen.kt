@@ -52,7 +52,7 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
     val userMediaListOptions = sharedPreferences.getString("userMediaListOptions", null)
 
     val viewModel = ViewModelProvider(store).get(ListsScreenViewModel::class.java)
-    viewModel.getMediaList(sessionToken.toString(), username.toString())
+    viewModel.getMediaList(sessionToken.toString(), username.toString(), Constants.COMPLETED, Constants.ANIME)
 
     Scaffold(
         topBar = {
@@ -85,7 +85,7 @@ fun MediaList(
 
             if (index == media?.lastIndex?.minus(10)) {
                 Log.d("DEEZ NUTS", "last index")
-                viewModel.getMediaList(sessionToken, userName)
+                viewModel.getMediaList(sessionToken, userName, Constants.COMPLETED, Constants.ANIME)
             }
             Card(
                 modifier = Modifier
