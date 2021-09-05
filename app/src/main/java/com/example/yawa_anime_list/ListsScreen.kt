@@ -98,7 +98,11 @@ fun MediaList(
                     modifier = Modifier
                         .padding(0.dp)
                         .background(Constants.CARDCOLOR)
-                        .fillParentMaxWidth(), index = index, item = item
+                        .fillParentMaxWidth(),
+                    index = index,
+                    item = item,
+                    mediaListStatus,
+                    mediaType
                 )
             }
         }
@@ -106,7 +110,12 @@ fun MediaList(
 }
 
 @Composable
-fun AnimeItem(modifier: Modifier, index: Int, item: GetMediaListQuery.MediaList?) {
+fun AnimeItem(
+    modifier: Modifier,
+    index: Int,
+    item: GetMediaListQuery.MediaList?,
+    mediaListStatus: MediaListStatus,
+    mediaType: MediaType) {
     Row(
         modifier = modifier
     ) {
