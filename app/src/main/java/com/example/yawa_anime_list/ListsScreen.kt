@@ -62,14 +62,17 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
             .fillMaxSize()
 
     ) {
-        MediaList(
-            viewModel.liveMedia,
-            viewModel,
-            sessionToken.toString(),
-            username.toString(),
-            Constants.COMPLETED,
-            Constants.ANIME
-        )
+        Column(modifier = Modifier.background(Constants.BGCOLOR)) {
+            Spacer(modifier = Modifier.height(4.dp))
+            MediaList(
+                viewModel.liveMedia,
+                viewModel,
+                sessionToken.toString(),
+                username.toString(),
+                Constants.COMPLETED,
+                Constants.ANIME
+            )
+        }
     }
 }
 
