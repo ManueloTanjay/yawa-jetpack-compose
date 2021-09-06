@@ -74,6 +74,7 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
     ) {
         Column(modifier = Modifier.background(Constants.BGCOLOR)) {
             Spacer(modifier = Modifier.height(4.dp))
+
             BottomTabRow(tabs = listOf("Anime", "Manga")) {
                 setSelectedTabIndex(it)
             }
@@ -261,7 +262,7 @@ fun BottomTabRow(
     TabRow(
         selectedTabIndex = selectedTabIndex,
         backgroundColor = Color.Transparent,
-        contentColor = Color.Black,
+        contentColor = Color.White,
         modifier = modifier
     ) {
         tabs.forEachIndexed { index, item ->
@@ -274,7 +275,7 @@ fun BottomTabRow(
                     onTabSelected(index)
                 }
             ) {
-                Text(text = item, modifier = Modifier.padding(10.dp))
+                Text(text = item, modifier = Modifier.padding(10.dp), color = Color.White)
             }
         }
     }
