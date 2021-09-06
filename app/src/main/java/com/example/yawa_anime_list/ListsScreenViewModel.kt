@@ -28,19 +28,22 @@ class ListsScreenViewModel : ViewModel() {
         val mediaCompletedAnime = liveMediaCompletedAnime.value?.toMutableList() ?: mutableListOf()
         val mediaCompletedManga = liveMediaCompletedManga.value?.toMutableList() ?: mutableListOf()
 
-//        if (!hasNextPage) {
-//            Log.d("GETMEDIALIST", "Does not have next page")
-//            return
-//        }
         if (mediaType == Constants.ANIME && mediaListStatus == Constants.COMPLETED) {
             nextPage = completedAnimeNextPage
+            if (!hasCompletedAnimeNextPage) {
+                Log.d("COMPLETED ANIME", "Last page reached")
+                return
+            }
         }
         if (mediaType == Constants.MANGA && mediaListStatus == Constants.COMPLETED) {
             nextPage = completedMangaNextPage
+            if(!hasCompletedMangaNextPage) {
+                Log.d("COMPLETED MANGA", "Last page reached")
+                return
+            }
         }
 
         runBlocking {
-//            media.addAll(getCurrentAnimeList(sessionToken, nextPage, userName)!!.toMutableList())
             Log.d("RUNBLOCKING", media.size.toString())
 
             var page = getMediaListAPI(sessionToken, nextPage, userName, mediaListStatus, mediaType)
@@ -66,8 +69,6 @@ class ListsScreenViewModel : ViewModel() {
             liveMediaCompletedManga.value = mediaCompletedManga
             completedMangaNextPage++
         }
-
-        nextPage++
     }
 
 
