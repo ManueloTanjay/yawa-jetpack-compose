@@ -14,11 +14,15 @@ import type.MediaType
 class ListsScreenViewModel : ViewModel() {
 
     val liveMedia = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
+    val liveMediaCompletedAnime = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
+    val liveMediaCompletedManga = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
     private var nextPage = 1
     private var hasNextPage = true
 
     fun getMediaList(sessionToken: String, userName: String, mediaListStatus: MediaListStatus, mediaType: MediaType) {
         val media = liveMedia.value?.toMutableList() ?: mutableListOf()
+        val mediaCompletedAnime = liveMediaCompletedAnime.value?.toMutableList() ?: mutableListOf()
+        val mediaCompletedManga = liveMediaCompletedManga.value?.toMutableList() ?: mutableListOf()
 
         if (!hasNextPage) {
             Log.d("GETMEDIALIST", "Does not have next page")
@@ -31,10 +35,20 @@ class ListsScreenViewModel : ViewModel() {
 
             var page = getMediaListAPI(sessionToken, nextPage, userName, mediaListStatus, mediaType)
             hasNextPage = page?.pageInfo?.hasNextPage ?: true
+
             media.addAll(page?.mediaList!!.toMutableList())
+            if (mediaType == Constants.ANIME)
+                mediaCompletedAnime.addAll(page?.mediaList!!.toMutableList())
+            if (mediaType == Constants.MANGA)
+                mediaCompletedManga.addAll(page?.mediaList!!.toMutableList())
         }
 
         liveMedia.value = media
+        if(mediaType == Constants.ANIME && mediaListStatus == Constants.COMPLETED)
+            liveMediaCompletedAnime.value = mediaCompletedAnime
+        if(mediaType == Constants.MANGA && mediaListStatus == Constants.COMPLETED)
+            liveMediaCompletedManga.value = mediaCompletedManga
+
         nextPage++
     }
 

@@ -224,3 +224,14 @@ fun MangaProgress(
             .background(Color.Yellow)
     )
 }
+
+@Composable
+fun BottomTabRow (
+    modifier: Modifier = Modifier,
+    imageWithTexts: List<String>,
+    onTabSelected: (selectedIndex: Int) -> Unit
+) {
+    val (selectedTabIndex, setSelectedTabIndex) = remember {
+        mutableStateOf(0)
+    }
+}
