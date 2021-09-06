@@ -18,15 +18,25 @@ class ListsScreenViewModel : ViewModel() {
     val liveMediaCompletedManga = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
     private var nextPage = 1
     private var hasNextPage = true
+    private var completedAnimeNextPage = 1
+    private var hasCompletedAnimeNextPage = true
+    private var completedMangaNextPage = 1
+    private var hasCompletedMangaNextPage = true
 
     fun getMediaList(sessionToken: String, userName: String, mediaListStatus: MediaListStatus, mediaType: MediaType) {
         val media = liveMedia.value?.toMutableList() ?: mutableListOf()
         val mediaCompletedAnime = liveMediaCompletedAnime.value?.toMutableList() ?: mutableListOf()
         val mediaCompletedManga = liveMediaCompletedManga.value?.toMutableList() ?: mutableListOf()
 
-        if (!hasNextPage) {
-            Log.d("GETMEDIALIST", "Does not have next page")
-            return
+//        if (!hasNextPage) {
+//            Log.d("GETMEDIALIST", "Does not have next page")
+//            return
+//        }
+        if (mediaType == Constants.ANIME && mediaListStatus == Constants.COMPLETED) {
+            nextPage = completedAnimeNextPage
+        }
+        if (mediaType == Constants.MANGA && mediaListStatus == Constants.COMPLETED) {
+            nextPage = completedMangaNextPage
         }
 
         runBlocking {
@@ -37,17 +47,25 @@ class ListsScreenViewModel : ViewModel() {
             hasNextPage = page?.pageInfo?.hasNextPage ?: true
 
             media.addAll(page?.mediaList!!.toMutableList())
-            if (mediaType == Constants.ANIME)
+            if (mediaType == Constants.ANIME) {
                 mediaCompletedAnime.addAll(page?.mediaList!!.toMutableList())
-            if (mediaType == Constants.MANGA)
+                hasCompletedAnimeNextPage = hasNextPage
+            }
+            if (mediaType == Constants.MANGA) {
                 mediaCompletedManga.addAll(page?.mediaList!!.toMutableList())
+                hasCompletedMangaNextPage = hasNextPage
+            }
         }
 
         liveMedia.value = media
-        if(mediaType == Constants.ANIME && mediaListStatus == Constants.COMPLETED)
+        if(mediaType == Constants.ANIME && mediaListStatus == Constants.COMPLETED) {
             liveMediaCompletedAnime.value = mediaCompletedAnime
-        if(mediaType == Constants.MANGA && mediaListStatus == Constants.COMPLETED)
+            completedAnimeNextPage++
+        }
+        if(mediaType == Constants.MANGA && mediaListStatus == Constants.COMPLETED) {
             liveMediaCompletedManga.value = mediaCompletedManga
+            completedMangaNextPage++
+        }
 
         nextPage++
     }

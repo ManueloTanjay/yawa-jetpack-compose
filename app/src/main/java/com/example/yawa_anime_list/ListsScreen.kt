@@ -46,12 +46,22 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
         mutableStateOf("Anime")
     }
 
+    val (selectedTabIndex, setSelectedTabIndex) = remember {
+        mutableStateOf(0)
+    }
+
     val viewModel = ViewModelProvider(store).get(ListsScreenViewModel::class.java)
     viewModel.getMediaList(
         sessionToken.toString(),
         username.toString(),
         Constants.COMPLETED,
         Constants.ANIME
+    )
+    viewModel.getMediaList(
+        sessionToken.toString(),
+        username.toString(),
+        Constants.COMPLETED,
+        Constants.MANGA
     )
 
     Scaffold(
@@ -64,14 +74,27 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
     ) {
         Column(modifier = Modifier.background(Constants.BGCOLOR)) {
             Spacer(modifier = Modifier.height(4.dp))
-            MediaList(
-                viewModel.liveMedia,
-                viewModel,
-                sessionToken.toString(),
-                username.toString(),
-                Constants.COMPLETED,
-                Constants.ANIME
-            )
+            BottomTabRow(tabs = listOf("Anime", "Manga")) {
+                setSelectedTabIndex(it)
+            }
+            when (selectedTabIndex) {
+                0 -> MediaList(
+                    viewModel.liveMediaCompletedAnime,
+                    viewModel,
+                    sessionToken.toString(),
+                    username.toString(),
+                    Constants.COMPLETED,
+                    Constants.ANIME
+                )
+                1 -> MediaList(
+                    viewModel.liveMediaCompletedManga,
+                    viewModel,
+                    sessionToken.toString(),
+                    username.toString(),
+                    Constants.COMPLETED,
+                    Constants.MANGA
+                )
+            }
         }
     }
 }
@@ -226,12 +249,33 @@ fun MangaProgress(
 }
 
 @Composable
-fun BottomTabRow (
+fun BottomTabRow(
     modifier: Modifier = Modifier,
-    imageWithTexts: List<String>,
+    tabs: List<String>,
     onTabSelected: (selectedIndex: Int) -> Unit
 ) {
     val (selectedTabIndex, setSelectedTabIndex) = remember {
         mutableStateOf(0)
+    }
+    val inactiveColor = Color(0xFF777777)
+    TabRow(
+        selectedTabIndex = selectedTabIndex,
+        backgroundColor = Color.Transparent,
+        contentColor = Color.Black,
+        modifier = modifier
+    ) {
+        tabs.forEachIndexed { index, item ->
+            Tab(
+                selected = selectedTabIndex == index,
+                selectedContentColor = Color.Black,
+                unselectedContentColor = inactiveColor,
+                onClick = {
+                    setSelectedTabIndex(index)
+                    onTabSelected(index)
+                }
+            ) {
+                Text(text = item, modifier = Modifier.padding(10.dp))
+            }
+        }
     }
 }
