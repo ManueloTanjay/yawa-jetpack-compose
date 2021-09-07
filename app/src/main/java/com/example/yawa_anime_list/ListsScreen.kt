@@ -6,6 +6,9 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,7 +26,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LiveData
 import coil.compose.rememberImagePainter
 import type.MediaListStatus
@@ -54,14 +59,32 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
     viewModel.getMediaList(
         sessionToken.toString(),
         username.toString(),
-        Constants.COMPLETED,
+        Constants.CURRENT,
         Constants.ANIME
     )
     viewModel.getMediaList(
         sessionToken.toString(),
         username.toString(),
         Constants.COMPLETED,
-        Constants.MANGA
+        Constants.ANIME
+    )
+    viewModel.getMediaList(
+        sessionToken.toString(),
+        username.toString(),
+        Constants.PLANNING,
+        Constants.ANIME
+    )
+    viewModel.getMediaList(
+        sessionToken.toString(),
+        username.toString(),
+        Constants.PAUSED,
+        Constants.ANIME
+    )
+    viewModel.getMediaList(
+        sessionToken.toString(),
+        username.toString(),
+        Constants.DROPPED,
+        Constants.ANIME
     )
 
     Scaffold(
@@ -75,11 +98,19 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
         Column(modifier = Modifier.background(Constants.BGCOLOR)) {
             Spacer(modifier = Modifier.height(4.dp))
 
-            BottomTabRow(tabs = listOf("Anime", "Manga")) {
+            BottomTabRow(tabs = listOf("WATCHING", "COMPLETED", "PLANNING", "PAUSED", "DROPPED")) {
                 setSelectedTabIndex(it)
             }
             when (selectedTabIndex) {
                 0 -> MediaList(
+                    viewModel.liveMediaCurrentAnime,
+                    viewModel,
+                    sessionToken.toString(),
+                    username.toString(),
+                    Constants.CURRENT,
+                    Constants.ANIME
+                )
+                1 -> MediaList(
                     viewModel.liveMediaCompletedAnime,
                     viewModel,
                     sessionToken.toString(),
@@ -87,13 +118,29 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
                     Constants.COMPLETED,
                     Constants.ANIME
                 )
-                1 -> MediaList(
-                    viewModel.liveMediaCompletedManga,
+                2 -> MediaList(
+                    viewModel.liveMediaPlanningAnime,
                     viewModel,
                     sessionToken.toString(),
                     username.toString(),
-                    Constants.COMPLETED,
-                    Constants.MANGA
+                    Constants.PLANNING,
+                    Constants.ANIME
+                )
+                3 -> MediaList(
+                    viewModel.liveMediaPausedAnime,
+                    viewModel,
+                    sessionToken.toString(),
+                    username.toString(),
+                    Constants.PAUSED,
+                    Constants.ANIME
+                )
+                4 -> MediaList(
+                    viewModel.liveMediaDroppedAnime,
+                    viewModel,
+                    sessionToken.toString(),
+                    username.toString(),
+                    Constants.DROPPED,
+                    Constants.ANIME
                 )
             }
         }
@@ -263,7 +310,7 @@ fun BottomTabRow(
         selectedTabIndex = selectedTabIndex,
         backgroundColor = Color.Transparent,
         contentColor = Color.White,
-        modifier = modifier
+        modifier = modifier,
     ) {
         tabs.forEachIndexed { index, item ->
             Tab(
@@ -275,7 +322,14 @@ fun BottomTabRow(
                     onTabSelected(index)
                 }
             ) {
-                Text(text = item, modifier = Modifier.padding(10.dp), color = Color.White)
+                Text(
+                    text = item,
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    color = Color.White,
+                    maxLines = 1,
+                    textAlign = TextAlign.Center,
+                    fontSize = 12.sp
+                )
             }
         }
     }
