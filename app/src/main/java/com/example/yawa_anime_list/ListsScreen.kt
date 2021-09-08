@@ -229,9 +229,10 @@ fun MediaListWrapper(
         mutableStateOf(0)
     }
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().padding(bottom = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+
     ) {
         MediaStatusTabRow(tabs = tabs) {
             setSelectedTabIndex(it)
