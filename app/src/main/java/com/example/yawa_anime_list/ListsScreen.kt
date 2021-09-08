@@ -105,6 +105,14 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
 }
 
 /**
+ *  Main navigation composable
+ */
+//@Composable
+//fun Navigation(navController: NavHostController) {
+//
+//}
+
+/**
  *  MediaListWrapper to have different pages for anime and manga
  */
 @Composable
