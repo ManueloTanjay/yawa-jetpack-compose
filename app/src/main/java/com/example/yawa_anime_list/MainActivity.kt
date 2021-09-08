@@ -35,6 +35,7 @@ class MainActivity : ComponentActivity() {
 
     private val TAG = "MainActivityTAG"
 
+    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

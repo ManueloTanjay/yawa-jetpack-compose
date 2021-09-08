@@ -29,8 +29,10 @@ object Constants {
     //  colors
     val CARDCOLOR = Color(0xff404040)
     val BGCOLOR = Color(0xff353535)
+    val SELECTEDCOLOR = Color(0xffffffff)
+    val UNSELECTEDCOLOR = Color(0xff606060)
+    val TABCOLOR = Color(0xff202020)
     val FONTCOLOR = Color(0xffffffff)
     val WHITE = Color(0xffffffff)
-
 
 }

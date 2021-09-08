@@ -90,8 +90,8 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
         Constants.DROPPED,
         Constants.ANIME
     )
-    val navController = rememberNavController()
 
+    val navController = rememberNavController()
     Scaffold(
         topBar = {
             TopAppBar(title = { Text(mediaType) })
@@ -183,15 +183,15 @@ fun BottomNavigationBar(
     val backStackEntry = navController.currentBackStackEntryAsState()
     BottomNavigation(
         modifier = modifier,
-        backgroundColor = Color.Green,
+        backgroundColor = Constants.TABCOLOR,
         elevation = 16.dp
     ) {
         items.forEach { item ->
             val selected = item.route == backStackEntry.value?.destination?.route
             BottomNavigationItem(
                 selected = selected,
-                selectedContentColor = Color.Red,
-                unselectedContentColor = Color.Blue,
+                selectedContentColor = Constants.SELECTEDCOLOR,
+                unselectedContentColor = Constants.UNSELECTEDCOLOR,
                 onClick = { onItemClick(item) },
                 icon = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
