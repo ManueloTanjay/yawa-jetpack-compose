@@ -6,9 +6,6 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.ScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -49,10 +46,6 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
 
     val (mediaType, setMediaType) = remember {
         mutableStateOf("Anime")
-    }
-
-    val (selectedTabIndex, setSelectedTabIndex) = remember {
-        mutableStateOf(0)
     }
 
     val viewModel = ViewModelProvider(store).get(ListsScreenViewModel::class.java)
@@ -98,52 +91,78 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
         Column(modifier = Modifier.background(Constants.BGCOLOR)) {
             Spacer(modifier = Modifier.height(4.dp))
 
-            BottomTabRow(tabs = listOf("WATCHING", "COMPLETED", "PLANNING", "PAUSED", "DROPPED")) {
-                setSelectedTabIndex(it)
-            }
-            when (selectedTabIndex) {
-                0 -> MediaList(
-                    viewModel.liveMediaCurrentAnime,
-                    viewModel,
-                    sessionToken.toString(),
-                    username.toString(),
-                    Constants.CURRENT,
-                    Constants.ANIME
-                )
-                1 -> MediaList(
-                    viewModel.liveMediaCompletedAnime,
-                    viewModel,
-                    sessionToken.toString(),
-                    username.toString(),
-                    Constants.COMPLETED,
-                    Constants.ANIME
-                )
-                2 -> MediaList(
-                    viewModel.liveMediaPlanningAnime,
-                    viewModel,
-                    sessionToken.toString(),
-                    username.toString(),
-                    Constants.PLANNING,
-                    Constants.ANIME
-                )
-                3 -> MediaList(
-                    viewModel.liveMediaPausedAnime,
-                    viewModel,
-                    sessionToken.toString(),
-                    username.toString(),
-                    Constants.PAUSED,
-                    Constants.ANIME
-                )
-                4 -> MediaList(
-                    viewModel.liveMediaDroppedAnime,
-                    viewModel,
-                    sessionToken.toString(),
-                    username.toString(),
-                    Constants.DROPPED,
-                    Constants.ANIME
-                )
-            }
+            //
+            MediaListWrapper(
+                viewModel = viewModel,
+                sessionToken = sessionToken.toString(),
+                username = username.toString(),
+                mediaType = Constants.ANIME,
+                tabs = listOf("WATCHING", "COMPLETED", "PLANNING", "PAUSED", "DROPPED")
+            )
+            //
         }
+    }
+}
+
+/**
+ *  MediaListWrapper to have different pages for anime and manga
+ */
+@Composable
+fun MediaListWrapper(
+    viewModel: ListsScreenViewModel,
+    sessionToken: String,
+    username: String,
+    mediaType: MediaType,
+    tabs: List<String>
+) {
+
+    val (selectedTabIndex, setSelectedTabIndex) = remember {
+        mutableStateOf(0)
+    }
+    MediaStatusTabRow(tabs = tabs) {
+        setSelectedTabIndex(it)
+    }
+    when (selectedTabIndex) {
+        0 -> MediaList(
+            viewModel.liveMediaCurrentAnime,
+            viewModel,
+            sessionToken.toString(),
+            username.toString(),
+            Constants.CURRENT,
+            mediaType
+        )
+        1 -> MediaList(
+            viewModel.liveMediaCompletedAnime,
+            viewModel,
+            sessionToken.toString(),
+            username.toString(),
+            Constants.COMPLETED,
+            mediaType
+        )
+        2 -> MediaList(
+            viewModel.liveMediaPlanningAnime,
+            viewModel,
+            sessionToken.toString(),
+            username.toString(),
+            Constants.PLANNING,
+            mediaType
+        )
+        3 -> MediaList(
+            viewModel.liveMediaPausedAnime,
+            viewModel,
+            sessionToken.toString(),
+            username.toString(),
+            Constants.PAUSED,
+            mediaType
+        )
+        4 -> MediaList(
+            viewModel.liveMediaDroppedAnime,
+            viewModel,
+            sessionToken.toString(),
+            username.toString(),
+            Constants.DROPPED,
+            mediaType
+        )
     }
 }
 
@@ -297,7 +316,7 @@ fun MangaProgress(
 }
 
 @Composable
-fun BottomTabRow(
+fun MediaStatusTabRow(
     modifier: Modifier = Modifier,
     tabs: List<String>,
     onTabSelected: (selectedIndex: Int) -> Unit
