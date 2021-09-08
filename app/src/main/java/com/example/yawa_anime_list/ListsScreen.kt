@@ -13,6 +13,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -27,6 +31,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LiveData
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import type.MediaListStatus
 import type.MediaType
@@ -36,6 +46,7 @@ import type.MediaType
  *  Display session token and when it expires for now
  *  Will display MediaList once Apollo3 is installed and configured
  */
+@ExperimentalMaterialApi
 @Composable
 fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner) {
     val sessionToken = sharedPreferences.getString("sessionToken", null)
@@ -79,27 +90,48 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
         Constants.DROPPED,
         Constants.ANIME
     )
+    val navController = rememberNavController()
 
     Scaffold(
         topBar = {
             TopAppBar(title = { Text(mediaType) })
         },
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        bottomBar = {
+            BottomNavigationBar(
+                items = listOf(
+                    BottomNavBarOption(
+                        name = "ANIME",
+                        route = "anime",
+                        icon = Icons.Default.Home
+                    ),
+                    BottomNavBarOption(
+                        name = "MANGA",
+                        route = "manga",
+                        icon = Icons.Default.Notifications
+                    ),
+                    BottomNavBarOption(
+                        name = "SETTINGS",
+                        route = "settings",
+                        icon = Icons.Default.Settings
+                    ),
+                ),
+                navController = navController,
+                onItemClick = {
+                    navController.navigate(it.route)
+                })
+        }
 
     ) {
         Column(modifier = Modifier.background(Constants.BGCOLOR)) {
             Spacer(modifier = Modifier.height(4.dp))
-
-            //
-            MediaListWrapper(
+            Navigation(
+                navController = navController,
                 viewModel = viewModel,
                 sessionToken = sessionToken.toString(),
                 username = username.toString(),
-                mediaType = Constants.ANIME,
-                tabs = listOf("WATCHING", "COMPLETED", "PLANNING", "PAUSED", "DROPPED")
             )
-            //
         }
     }
 }
@@ -107,10 +139,79 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
 /**
  *  Main navigation composable
  */
-//@Composable
-//fun Navigation(navController: NavHostController) {
-//
-//}
+@Composable
+fun Navigation(
+    navController: NavHostController,
+    viewModel: ListsScreenViewModel,
+    sessionToken: String,
+    username: String,
+) {
+    NavHost(navController = navController, startDestination = "anime") {
+        composable("anime") {
+            MediaListWrapper(
+                viewModel = viewModel,
+                sessionToken = sessionToken,
+                username = username,
+                mediaType = Constants.ANIME,
+                tabs = listOf("WATCHING", "COMPLETED", "PLANNING", "PAUSED", "DROPPED")
+            )
+        }
+        composable("manga") {
+//            MediaListWrapper(
+//                viewModel = viewModel,
+//                sessionToken = sessionToken,
+//                username = username,
+//                mediaType = Constants.MANGA,
+//                tabs = listOf("READING", "COMPLETED", "PLANNING", "PAUSED", "DROPPED")
+//            )
+            Text(text = "MANGA HERE")
+        }
+        composable("settings") {
+            Text(text = "SETTINGS HERE")
+        }
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun BottomNavigationBar(
+    items: List<BottomNavBarOption>,
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    onItemClick: (BottomNavBarOption) -> Unit
+) {
+    val backStackEntry = navController.currentBackStackEntryAsState()
+    BottomNavigation(
+        modifier = modifier,
+        backgroundColor = Color.Green,
+        elevation = 16.dp
+    ) {
+        items.forEach { item ->
+            val selected = item.route == backStackEntry.value?.destination?.route
+            BottomNavigationItem(
+                selected = selected,
+                selectedContentColor = Color.Red,
+                unselectedContentColor = Color.Blue,
+                onClick = { onItemClick(item) },
+                icon = {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = item.name
+                        )
+                        if (selected) {
+                            Text(
+                                text = item.name,
+                                textAlign = TextAlign.Center,
+                                fontSize = 10.sp
+                            )
+                        }
+                    }
+                }
+            )
+        }
+    }
+}
 
 /**
  *  MediaListWrapper to have different pages for anime and manga
@@ -127,51 +228,59 @@ fun MediaListWrapper(
     val (selectedTabIndex, setSelectedTabIndex) = remember {
         mutableStateOf(0)
     }
-    MediaStatusTabRow(tabs = tabs) {
-        setSelectedTabIndex(it)
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        MediaStatusTabRow(tabs = tabs) {
+            setSelectedTabIndex(it)
+        }
+        when (selectedTabIndex) {
+            0 -> MediaList(
+                viewModel.liveMediaCurrentAnime,
+                viewModel,
+                sessionToken.toString(),
+                username.toString(),
+                Constants.CURRENT,
+                mediaType
+            )
+            1 -> MediaList(
+                viewModel.liveMediaCompletedAnime,
+                viewModel,
+                sessionToken.toString(),
+                username.toString(),
+                Constants.COMPLETED,
+                mediaType
+            )
+            2 -> MediaList(
+                viewModel.liveMediaPlanningAnime,
+                viewModel,
+                sessionToken.toString(),
+                username.toString(),
+                Constants.PLANNING,
+                mediaType
+            )
+            3 -> MediaList(
+                viewModel.liveMediaPausedAnime,
+                viewModel,
+                sessionToken.toString(),
+                username.toString(),
+                Constants.PAUSED,
+                mediaType
+            )
+            4 -> MediaList(
+                viewModel.liveMediaDroppedAnime,
+                viewModel,
+                sessionToken.toString(),
+                username.toString(),
+                Constants.DROPPED,
+                mediaType
+            )
+        }
     }
-    when (selectedTabIndex) {
-        0 -> MediaList(
-            viewModel.liveMediaCurrentAnime,
-            viewModel,
-            sessionToken.toString(),
-            username.toString(),
-            Constants.CURRENT,
-            mediaType
-        )
-        1 -> MediaList(
-            viewModel.liveMediaCompletedAnime,
-            viewModel,
-            sessionToken.toString(),
-            username.toString(),
-            Constants.COMPLETED,
-            mediaType
-        )
-        2 -> MediaList(
-            viewModel.liveMediaPlanningAnime,
-            viewModel,
-            sessionToken.toString(),
-            username.toString(),
-            Constants.PLANNING,
-            mediaType
-        )
-        3 -> MediaList(
-            viewModel.liveMediaPausedAnime,
-            viewModel,
-            sessionToken.toString(),
-            username.toString(),
-            Constants.PAUSED,
-            mediaType
-        )
-        4 -> MediaList(
-            viewModel.liveMediaDroppedAnime,
-            viewModel,
-            sessionToken.toString(),
-            username.toString(),
-            Constants.DROPPED,
-            mediaType
-        )
-    }
+    //
+    //
 }
 
 /**
