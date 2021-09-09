@@ -19,18 +19,20 @@ class ListsScreenViewModel : ViewModel() {
     //anime
     val liveMediaCurrentAnime = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
     val liveMediaCompletedAnime = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
-    val liveMediaPlanningAnime =  MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
+    val liveMediaPlanningAnime = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
     val liveMediaPausedAnime = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
     val liveMediaDroppedAnime = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
+
     //manga
     val liveMediaCurrentManga = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
     val liveMediaCompletedManga = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
-    val liveMediaPlanningManga =  MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
+    val liveMediaPlanningManga = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
     val liveMediaDroppedManga = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
     val liveMediaPausedManga = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
 
     private var nextPage = 1
     private var hasNextPage = true
+
     //anime
     private var currentAnimeNextPage = 1
     private var hasCurrentAnimeNextPage = true
@@ -42,24 +44,31 @@ class ListsScreenViewModel : ViewModel() {
     private var hasPausedAnimeNextPage = true
     private var droppedAnimeNextPage = 1
     private var hasDroppedAnimeNextPage = true
+
     //manga
+    private var currentMangaNextPage = 1
+    private var hasCurrentMangaNextPage = true
     private var completedMangaNextPage = 1
     private var hasCompletedMangaNextPage = true
+    private var planningMangaNextPage = 1
+    private var hasPlanningMangaNextPage = true
+    private var pausedMangaNextPage = 1
+    private var hasPausedMangaNextPage = true
+    private var droppedMangaNextPage = 1
+    private var hasDroppedMangaNextPage = true
 
-    fun getMediaList(sessionToken: String, userName: String, mediaListStatus: MediaListStatus, mediaType: MediaType) {
-        val media = liveMedia.value?.toMutableList() ?: mutableListOf()
-        //anime
-        val mediaCurrentAnime = liveMediaCurrentAnime.value?.toMutableList() ?: mutableListOf()
-        val mediaCompletedAnime = liveMediaCompletedAnime.value?.toMutableList() ?: mutableListOf()
-        val mediaPlanningAnime = liveMediaPlanningAnime.value?.toMutableList() ?: mutableListOf()
-        val mediaPausedAnime = liveMediaPausedAnime.value?.toMutableList() ?: mutableListOf()
-        val mediaDroppedAnime = liveMediaDroppedAnime.value?.toMutableList() ?: mutableListOf()
-        //manga
-        val mediaCompletedManga = liveMediaCompletedManga.value?.toMutableList() ?: mutableListOf()
+    fun getMediaList(
+        sessionToken: String,
+        userName: String,
+        mediaListStatus: MediaListStatus,
+        mediaType: MediaType
+    ) {
+        var media = mutableListOf<GetMediaListQuery.MediaList?>()
 
         //anime
         if (mediaType == Constants.ANIME) {
             if (mediaListStatus == Constants.CURRENT) {
+                media = liveMediaCurrentAnime.value?.toMutableList() ?: mutableListOf()
                 nextPage = currentAnimeNextPage
                 if (!hasCurrentAnimeNextPage) {
                     Log.d("CURRENT ANIME", "Last page reached")
@@ -67,6 +76,7 @@ class ListsScreenViewModel : ViewModel() {
                 }
             }
             if (mediaListStatus == Constants.COMPLETED) {
+                media = liveMediaCompletedAnime.value?.toMutableList() ?: mutableListOf()
                 nextPage = completedAnimeNextPage
                 if (!hasCompletedAnimeNextPage) {
                     Log.d("COMPLETED ANIME", "Last page reached")
@@ -74,6 +84,7 @@ class ListsScreenViewModel : ViewModel() {
                 }
             }
             if (mediaListStatus == Constants.PLANNING) {
+                media = liveMediaPlanningAnime.value?.toMutableList() ?: mutableListOf()
                 nextPage = planningAnimeNextPage
                 if (!hasPlanningAnimeNextPage) {
                     Log.d("PLANNING ANIME", "Last page reached")
@@ -81,6 +92,7 @@ class ListsScreenViewModel : ViewModel() {
                 }
             }
             if (mediaListStatus == Constants.PAUSED) {
+                media = liveMediaPausedAnime.value?.toMutableList() ?: mutableListOf()
                 nextPage = pausedAnimeNextPage
                 if (!hasPausedAnimeNextPage) {
                     Log.d("PAUSED ANIME", "Last page reached")
@@ -88,6 +100,7 @@ class ListsScreenViewModel : ViewModel() {
                 }
             }
             if (mediaListStatus == Constants.DROPPED) {
+                media = liveMediaDroppedAnime.value?.toMutableList() ?: mutableListOf()
                 nextPage = droppedAnimeNextPage
                 if (!hasDroppedAnimeNextPage) {
                     Log.d("DROPPED ANIME", "Last page reached")
@@ -96,11 +109,46 @@ class ListsScreenViewModel : ViewModel() {
             }
         }
         //manga
-        if (mediaType == Constants.MANGA && mediaListStatus == Constants.COMPLETED) {
-            nextPage = completedMangaNextPage
-            if(!hasCompletedMangaNextPage) {
-                Log.d("COMPLETED MANGA", "Last page reached")
-                return
+        if (mediaType == Constants.MANGA) {
+            if (mediaListStatus == Constants.CURRENT) {
+                media = liveMediaCurrentManga.value?.toMutableList() ?: mutableListOf()
+                nextPage = currentMangaNextPage
+                if (!hasCurrentMangaNextPage) {
+                    Log.d("CURRENT MANGA", "Last page reached")
+                    return
+                }
+            }
+            if (mediaListStatus == Constants.COMPLETED) {
+                media = liveMediaCompletedManga.value?.toMutableList() ?: mutableListOf()
+                nextPage = completedMangaNextPage
+                if (!hasCompletedMangaNextPage) {
+                    Log.d("COMPLETED MANGA", "Last page reached")
+                    return
+                }
+            }
+            if (mediaListStatus == Constants.PLANNING) {
+                media = liveMediaPlanningManga.value?.toMutableList() ?: mutableListOf()
+                nextPage = planningMangaNextPage
+                if (!hasPlanningMangaNextPage) {
+                    Log.d("PLANNING MANGA", "Last page reached")
+                    return
+                }
+            }
+            if (mediaListStatus == Constants.PAUSED) {
+                media = liveMediaPausedManga.value?.toMutableList() ?: mutableListOf()
+                nextPage = pausedMangaNextPage
+                if (!hasPausedMangaNextPage) {
+                    Log.d("PAUSED MANGA", "Last page reached")
+                    return
+                }
+            }
+            if (mediaListStatus == Constants.DROPPED) {
+                media = liveMediaDroppedManga.value?.toMutableList() ?: mutableListOf()
+                nextPage = droppedMangaNextPage
+                if (!hasDroppedMangaNextPage) {
+                    Log.d("DROPPED MANGA", "Last page reached")
+                    return
+                }
             }
         }
 
@@ -113,62 +161,76 @@ class ListsScreenViewModel : ViewModel() {
             media.addAll(page?.mediaList!!.toMutableList())
             //anime
             if (mediaType == Constants.ANIME) {
-                if (mediaListStatus == Constants.CURRENT) {
-                    mediaCurrentAnime.addAll(page?.mediaList!!.toMutableList())
-                    hasCurrentAnimeNextPage = hasNextPage
-                }
-                if (mediaListStatus == Constants.COMPLETED) {
-                    mediaCompletedAnime.addAll(page?.mediaList!!.toMutableList())
-                    hasCompletedAnimeNextPage = hasNextPage
-                }
-                if (mediaListStatus == Constants.PLANNING) {
-                    mediaPlanningAnime.addAll(page?.mediaList!!.toMutableList())
-                    hasPlanningAnimeNextPage = hasNextPage
-                }
-                if (mediaListStatus == Constants.PAUSED) {
-                    mediaPausedAnime.addAll(page?.mediaList!!.toMutableList())
-                    hasPausedAnimeNextPage = hasNextPage
-                }
-                if (mediaListStatus == Constants.DROPPED) {
-                    mediaDroppedAnime.addAll(page?.mediaList!!.toMutableList())
-                    hasDroppedAnimeNextPage = hasNextPage
+                when (mediaListStatus) {
+                    Constants.CURRENT -> hasCurrentAnimeNextPage = hasNextPage
+                    Constants.COMPLETED -> hasCompletedAnimeNextPage = hasNextPage
+                    Constants.PLANNING -> hasPlanningAnimeNextPage = hasNextPage
+                    Constants.PAUSED -> hasPausedAnimeNextPage = hasNextPage
+                    Constants.DROPPED -> hasDroppedAnimeNextPage = hasNextPage
                 }
             }
             //manga
             if (mediaType == Constants.MANGA) {
-                mediaCompletedManga.addAll(page?.mediaList!!.toMutableList())
-                hasCompletedMangaNextPage = hasNextPage
+                when (mediaListStatus) {
+                    Constants.CURRENT -> hasCurrentMangaNextPage = hasNextPage
+                    Constants.COMPLETED -> hasCompletedMangaNextPage = hasNextPage
+                    Constants.PLANNING -> hasPlanningMangaNextPage = hasNextPage
+                    Constants.PAUSED -> hasPausedMangaNextPage = hasNextPage
+                    Constants.DROPPED -> hasDroppedMangaNextPage = hasNextPage
+                }
             }
         }
 
         liveMedia.value = media
         //anime
-        if(mediaType == Constants.ANIME) {
-            if(mediaListStatus == Constants.CURRENT) {
-                liveMediaCurrentAnime.value = mediaCurrentAnime
-                currentAnimeNextPage++
-            }
-            if(mediaListStatus == Constants.COMPLETED) {
-                liveMediaCompletedAnime.value = mediaCompletedAnime
-                completedAnimeNextPage++
-            }
-            if(mediaListStatus == Constants.PLANNING) {
-                liveMediaPlanningAnime.value = mediaPlanningAnime
-                planningAnimeNextPage++
-            }
-            if(mediaListStatus == Constants.PAUSED) {
-                liveMediaPausedAnime.value = mediaPausedAnime
-                pausedAnimeNextPage++
-            }
-            if(mediaListStatus == Constants.DROPPED) {
-                liveMediaDroppedAnime.value = mediaDroppedAnime
-                droppedAnimeNextPage++
+        if (mediaType == Constants.ANIME) {
+            when (mediaListStatus) {
+                Constants.CURRENT -> {
+                    liveMediaCurrentAnime.value = media;
+                    currentAnimeNextPage++
+                }
+                Constants.COMPLETED -> {
+                    liveMediaCompletedAnime.value = media;
+                    completedAnimeNextPage++
+                }
+                Constants.PLANNING -> {
+                    liveMediaPlanningAnime.value = media;
+                    planningAnimeNextPage++
+                }
+                Constants.PAUSED -> {
+                    liveMediaPausedAnime.value = media;
+                    pausedAnimeNextPage++
+                }
+                Constants.DROPPED -> {
+                    liveMediaDroppedAnime.value = media;
+                    droppedAnimeNextPage++
+                }
             }
         }
         //manga
-        if(mediaType == Constants.MANGA && mediaListStatus == Constants.COMPLETED) {
-            liveMediaCompletedManga.value = mediaCompletedManga
-            completedMangaNextPage++
+        if (mediaType == Constants.MANGA) {
+            when (mediaListStatus) {
+                Constants.CURRENT -> {
+                    liveMediaCurrentManga.value = media;
+                    currentMangaNextPage++
+                }
+                Constants.COMPLETED -> {
+                    liveMediaCompletedManga.value = media;
+                    completedMangaNextPage++
+                }
+                Constants.PLANNING -> {
+                    liveMediaPlanningManga.value = media;
+                    planningMangaNextPage++
+                }
+                Constants.PAUSED -> {
+                    liveMediaPausedManga.value = media;
+                    pausedMangaNextPage++
+                }
+                Constants.DROPPED -> {
+                    liveMediaDroppedManga.value = media;
+                    droppedMangaNextPage++
+                }
+            }
         }
     }
 

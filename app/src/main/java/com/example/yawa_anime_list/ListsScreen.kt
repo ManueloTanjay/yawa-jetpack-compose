@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -60,6 +61,7 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
     }
 
     val viewModel = ViewModelProvider(store).get(ListsScreenViewModel::class.java)
+    //anime
     viewModel.getMediaList(
         sessionToken.toString(),
         username.toString(),
@@ -89,6 +91,37 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
         username.toString(),
         Constants.DROPPED,
         Constants.ANIME
+    )
+    //manga
+    viewModel.getMediaList(
+        sessionToken.toString(),
+        username.toString(),
+        Constants.CURRENT,
+        Constants.MANGA
+    )
+    viewModel.getMediaList(
+        sessionToken.toString(),
+        username.toString(),
+        Constants.COMPLETED,
+        Constants.MANGA
+    )
+    viewModel.getMediaList(
+        sessionToken.toString(),
+        username.toString(),
+        Constants.PLANNING,
+        Constants.MANGA
+    )
+    viewModel.getMediaList(
+        sessionToken.toString(),
+        username.toString(),
+        Constants.PAUSED,
+        Constants.MANGA
+    )
+    viewModel.getMediaList(
+        sessionToken.toString(),
+        username.toString(),
+        Constants.DROPPED,
+        Constants.MANGA
     )
 
     val navController = rememberNavController()
@@ -157,14 +190,14 @@ fun Navigation(
             )
         }
         composable("manga") {
-//            MediaListWrapper(
-//                viewModel = viewModel,
-//                sessionToken = sessionToken,
-//                username = username,
-//                mediaType = Constants.MANGA,
-//                tabs = listOf("READING", "COMPLETED", "PLANNING", "PAUSED", "DROPPED")
-//            )
-            Text(text = "MANGA HERE")
+            MediaListWrapper(
+                viewModel = viewModel,
+                sessionToken = sessionToken,
+                username = username,
+                mediaType = Constants.MANGA,
+                tabs = listOf("READING", "COMPLETED", "PLANNING", "PAUSED", "DROPPED")
+            )
+//            Text(text = "MANGA HERE")
         }
         composable("settings") {
             Text(text = "SETTINGS HERE")
@@ -228,6 +261,32 @@ fun MediaListWrapper(
     val (selectedTabIndex, setSelectedTabIndex) = remember {
         mutableStateOf(0)
     }
+
+    //set which list to follow based on MediaType
+    var currentMedia = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
+    var completedMedia = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
+    var planningMedia = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
+    var pausedMedia = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
+    var droppedMedia = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
+
+    when(mediaType) {
+        Constants.ANIME -> {
+            currentMedia = viewModel.liveMediaCurrentAnime
+            completedMedia = viewModel.liveMediaCompletedAnime
+            planningMedia = viewModel.liveMediaPlanningAnime
+            pausedMedia = viewModel.liveMediaPausedAnime
+            droppedMedia = viewModel.liveMediaDroppedAnime
+        }
+        Constants.MANGA -> {
+            currentMedia = viewModel.liveMediaCurrentManga
+            completedMedia = viewModel.liveMediaCompletedManga
+            planningMedia = viewModel.liveMediaPlanningManga
+            pausedMedia = viewModel.liveMediaPausedManga
+            droppedMedia = viewModel.liveMediaDroppedManga
+        }
+    }
+
+
     Column(
         modifier = Modifier.fillMaxSize().padding(bottom = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -239,7 +298,7 @@ fun MediaListWrapper(
         }
         when (selectedTabIndex) {
             0 -> MediaList(
-                viewModel.liveMediaCurrentAnime,
+                currentMedia,
                 viewModel,
                 sessionToken.toString(),
                 username.toString(),
@@ -247,7 +306,7 @@ fun MediaListWrapper(
                 mediaType
             )
             1 -> MediaList(
-                viewModel.liveMediaCompletedAnime,
+                completedMedia,
                 viewModel,
                 sessionToken.toString(),
                 username.toString(),
@@ -255,7 +314,7 @@ fun MediaListWrapper(
                 mediaType
             )
             2 -> MediaList(
-                viewModel.liveMediaPlanningAnime,
+                planningMedia,
                 viewModel,
                 sessionToken.toString(),
                 username.toString(),
@@ -263,7 +322,7 @@ fun MediaListWrapper(
                 mediaType
             )
             3 -> MediaList(
-                viewModel.liveMediaPausedAnime,
+                pausedMedia,
                 viewModel,
                 sessionToken.toString(),
                 username.toString(),
@@ -271,7 +330,7 @@ fun MediaListWrapper(
                 mediaType
             )
             4 -> MediaList(
-                viewModel.liveMediaDroppedAnime,
+                droppedMedia,
                 viewModel,
                 sessionToken.toString(),
                 username.toString(),
