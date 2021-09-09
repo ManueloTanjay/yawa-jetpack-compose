@@ -155,7 +155,7 @@ class ListsScreenViewModel : ViewModel() {
         runBlocking {
             Log.d("RUNBLOCKING", media.size.toString())
 
-            var page = getMediaListAPI(sessionToken, nextPage, userName, mediaListStatus, mediaType)
+            val page = getMediaListAPI(sessionToken, nextPage, userName, mediaListStatus, mediaType)
             hasNextPage = page?.pageInfo?.hasNextPage ?: true
 
             media.addAll(page?.mediaList!!.toMutableList())
@@ -186,23 +186,23 @@ class ListsScreenViewModel : ViewModel() {
         if (mediaType == Constants.ANIME) {
             when (mediaListStatus) {
                 Constants.CURRENT -> {
-                    liveMediaCurrentAnime.value = media;
+                    liveMediaCurrentAnime.value = media
                     currentAnimeNextPage++
                 }
                 Constants.COMPLETED -> {
-                    liveMediaCompletedAnime.value = media;
+                    liveMediaCompletedAnime.value = media
                     completedAnimeNextPage++
                 }
                 Constants.PLANNING -> {
-                    liveMediaPlanningAnime.value = media;
+                    liveMediaPlanningAnime.value = media
                     planningAnimeNextPage++
                 }
                 Constants.PAUSED -> {
-                    liveMediaPausedAnime.value = media;
+                    liveMediaPausedAnime.value = media
                     pausedAnimeNextPage++
                 }
                 Constants.DROPPED -> {
-                    liveMediaDroppedAnime.value = media;
+                    liveMediaDroppedAnime.value = media
                     droppedAnimeNextPage++
                 }
             }
@@ -211,23 +211,23 @@ class ListsScreenViewModel : ViewModel() {
         if (mediaType == Constants.MANGA) {
             when (mediaListStatus) {
                 Constants.CURRENT -> {
-                    liveMediaCurrentManga.value = media;
+                    liveMediaCurrentManga.value = media
                     currentMangaNextPage++
                 }
                 Constants.COMPLETED -> {
-                    liveMediaCompletedManga.value = media;
+                    liveMediaCompletedManga.value = media
                     completedMangaNextPage++
                 }
                 Constants.PLANNING -> {
-                    liveMediaPlanningManga.value = media;
+                    liveMediaPlanningManga.value = media
                     planningMangaNextPage++
                 }
                 Constants.PAUSED -> {
-                    liveMediaPausedManga.value = media;
+                    liveMediaPausedManga.value = media
                     pausedMangaNextPage++
                 }
                 Constants.DROPPED -> {
-                    liveMediaDroppedManga.value = media;
+                    liveMediaDroppedManga.value = media
                     droppedMangaNextPage++
                 }
             }

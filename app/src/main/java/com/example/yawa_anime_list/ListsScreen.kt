@@ -197,7 +197,6 @@ fun Navigation(
                 mediaType = Constants.MANGA,
                 tabs = listOf("READING", "COMPLETED", "PLANNING", "PAUSED", "DROPPED")
             )
-//            Text(text = "MANGA HERE")
         }
         composable("settings") {
             Text(text = "SETTINGS HERE")
@@ -268,8 +267,7 @@ fun MediaListWrapper(
     var planningMedia = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
     var pausedMedia = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
     var droppedMedia = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
-
-    when(mediaType) {
+    when (mediaType) {
         Constants.ANIME -> {
             currentMedia = viewModel.liveMediaCurrentAnime
             completedMedia = viewModel.liveMediaCompletedAnime
@@ -288,11 +286,13 @@ fun MediaListWrapper(
 
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(bottom = 60.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
 
-    ) {
+        ) {
         MediaStatusTabRow(tabs = tabs) {
             setSelectedTabIndex(it)
         }
@@ -300,40 +300,40 @@ fun MediaListWrapper(
             0 -> MediaList(
                 currentMedia,
                 viewModel,
-                sessionToken.toString(),
-                username.toString(),
+                sessionToken,
+                username,
                 Constants.CURRENT,
                 mediaType
             )
             1 -> MediaList(
                 completedMedia,
                 viewModel,
-                sessionToken.toString(),
-                username.toString(),
+                sessionToken,
+                username,
                 Constants.COMPLETED,
                 mediaType
             )
             2 -> MediaList(
                 planningMedia,
                 viewModel,
-                sessionToken.toString(),
-                username.toString(),
+                sessionToken,
+                username,
                 Constants.PLANNING,
                 mediaType
             )
             3 -> MediaList(
                 pausedMedia,
                 viewModel,
-                sessionToken.toString(),
-                username.toString(),
+                sessionToken,
+                username,
                 Constants.PAUSED,
                 mediaType
             )
             4 -> MediaList(
                 droppedMedia,
                 viewModel,
-                sessionToken.toString(),
-                username.toString(),
+                sessionToken,
+                username,
                 Constants.DROPPED,
                 mediaType
             )
