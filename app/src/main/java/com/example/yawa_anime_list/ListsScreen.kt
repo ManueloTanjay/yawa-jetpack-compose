@@ -290,9 +290,8 @@ fun MediaListWrapper(
             .fillMaxSize()
             .padding(bottom = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-
-        ) {
+        verticalArrangement = Arrangement.Center
+    ) {
         MediaStatusTabRow(tabs = tabs) {
             setSelectedTabIndex(it)
         }
