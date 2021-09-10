@@ -39,6 +39,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
+import com.google.accompanist.pager.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import type.MediaListStatus
 import type.MediaType
 
@@ -248,6 +253,7 @@ fun BottomNavigationBar(
 /**
  *  MediaListWrapper to have different pages for anime and manga
  */
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MediaListWrapper(
     viewModel: ListsScreenViewModel,
@@ -256,10 +262,13 @@ fun MediaListWrapper(
     mediaType: MediaType,
     tabs: List<String>
 ) {
-
-    val (selectedTabIndex, setSelectedTabIndex) = remember {
-        mutableStateOf(0)
-    }
+    val coroutineScope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(
+        pageCount = tabs.size,
+        initialOffscreenLimit = 2,
+        infiniteLoop = true,
+        initialPage = 0
+    )
 
     //set which list to follow based on MediaType
     var currentMedia = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
@@ -284,7 +293,6 @@ fun MediaListWrapper(
         }
     }
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -292,54 +300,52 @@ fun MediaListWrapper(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        MediaStatusTabRow(tabs = tabs) {
-            setSelectedTabIndex(it)
-        }
-        when (selectedTabIndex) {
-            0 -> MediaList(
-                currentMedia,
-                viewModel,
-                sessionToken,
-                username,
-                Constants.CURRENT,
-                mediaType
-            )
-            1 -> MediaList(
-                completedMedia,
-                viewModel,
-                sessionToken,
-                username,
-                Constants.COMPLETED,
-                mediaType
-            )
-            2 -> MediaList(
-                planningMedia,
-                viewModel,
-                sessionToken,
-                username,
-                Constants.PLANNING,
-                mediaType
-            )
-            3 -> MediaList(
-                pausedMedia,
-                viewModel,
-                sessionToken,
-                username,
-                Constants.PAUSED,
-                mediaType
-            )
-            4 -> MediaList(
-                droppedMedia,
-                viewModel,
-                sessionToken,
-                username,
-                Constants.DROPPED,
-                mediaType
-            )
+        MediaStatusTabRow(tabs = tabs, coroutineScope = coroutineScope, pagerState = pagerState)
+        HorizontalPager(state = pagerState) { selectedTabIndex ->
+            when (selectedTabIndex) {
+                0 -> MediaList(
+                    currentMedia,
+                    viewModel,
+                    sessionToken,
+                    username,
+                    Constants.CURRENT,
+                    mediaType
+                )
+                1 -> MediaList(
+                    completedMedia,
+                    viewModel,
+                    sessionToken,
+                    username,
+                    Constants.COMPLETED,
+                    mediaType
+                )
+                2 -> MediaList(
+                    planningMedia,
+                    viewModel,
+                    sessionToken,
+                    username,
+                    Constants.PLANNING,
+                    mediaType
+                )
+                3 -> MediaList(
+                    pausedMedia,
+                    viewModel,
+                    sessionToken,
+                    username,
+                    Constants.PAUSED,
+                    mediaType
+                )
+                4 -> MediaList(
+                    droppedMedia,
+                    viewModel,
+                    sessionToken,
+                    username,
+                    Constants.DROPPED,
+                    mediaType
+                )
+            }
         }
     }
-    //
-    //
 }
 
 /**
@@ -491,14 +497,19 @@ fun MangaProgress(
     )
 }
 
+/**
+ *  a Composable for the topbar that supports swiping between tabs
+ */
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MediaStatusTabRow(
     modifier: Modifier = Modifier,
     tabs: List<String>,
-    onTabSelected: (selectedIndex: Int) -> Unit
+    coroutineScope: CoroutineScope,
+    pagerState: PagerState
 ) {
     val (selectedTabIndex, setSelectedTabIndex) = remember {
-        mutableStateOf(0)
+        mutableStateOf(pagerState.currentPage)
     }
     val inactiveColor = Color(0xFF777777)
     TabRow(
@@ -506,6 +517,11 @@ fun MediaStatusTabRow(
         backgroundColor = Color.Transparent,
         contentColor = Color.White,
         modifier = modifier,
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+            )
+        }
     ) {
         tabs.forEachIndexed { index, item ->
             Tab(
@@ -513,8 +529,9 @@ fun MediaStatusTabRow(
                 selectedContentColor = Color.Black,
                 unselectedContentColor = inactiveColor,
                 onClick = {
-                    setSelectedTabIndex(index)
-                    onTabSelected(index)
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
                 }
             ) {
                 Text(
