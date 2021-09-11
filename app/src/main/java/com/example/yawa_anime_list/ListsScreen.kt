@@ -511,25 +511,29 @@ fun AnimeProgress(
             modifier = Modifier
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
-//                .background(Color.Blue)
         ) {
-            BasicTextField(
-                modifier = Modifier.width(IntrinsicSize.Min),
-                value = progress,
-                textStyle = LocalTextStyle.current.copy(
-                    textAlign = TextAlign.Start,
-                    color = Color.White,
-                    fontSize = 20.sp
-                ),
-                onValueChange = {
-                    if (it == "") {
-                        setProgress("0")
-                    } else {
-                        setProgress(it)
-                    }
-                },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+//            BasicTextField(
+//                modifier = Modifier.width(IntrinsicSize.Min),
+//                value = progress,
+//                textStyle = LocalTextStyle.current.copy(
+//                    textAlign = TextAlign.Start,
+//                    color = Color.White,
+//                    fontSize = 20.sp
+//                ),
+//                onValueChange = {
+//                    if (it == "") {
+//                        setProgress("0")
+//                    } else {
+//                        setProgress(it)
+//                    }
+//                },
+//                singleLine = true,
+//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+//            )
+            Text(
+                text = progress,
+                color = Color.White,
+                fontSize = 20.sp
             )
             Text(
                 text = "/" + item?.media?.episodes.toString(),
@@ -538,7 +542,7 @@ fun AnimeProgress(
             )
             Spacer(modifier = Modifier.width(5.dp))
             Card(
-                shape = RoundedCornerShape(4.dp),
+//                shape = RoundedCornerShape(4.dp),
                 modifier = Modifier
                     .background(Color.Transparent)
                     .width(34.dp)
