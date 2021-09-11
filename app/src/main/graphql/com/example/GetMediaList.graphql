@@ -17,6 +17,10 @@ query GetMediaList ($page: Int, $username: String, $status: MediaListStatus, $ty
                 episodes
                 chapters
                 volumes
+                format
+                season
+                seasonYear
+                description
                 title {
                     english
                     romaji

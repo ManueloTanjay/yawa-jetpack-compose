@@ -432,16 +432,15 @@ fun MediaItem(
         Column(
             modifier = Modifier
                 .height(Constants.IMAGE_HEIGHT)
-                .fillMaxWidth(),
-//                .background(Color.Green),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceAround
+                .fillMaxWidth()
+                .background(Color.Green)
+//            horizontalAlignment = Alignment.CenterHorizontally,
+//            verticalArrangement = Arrangement.SpaceAround
         ) {
             Text(
                 item?.media?.title?.romaji.toString(),
                 modifier = Modifier
                     .background(Color.Yellow)
-//                    .padding(15.dp)
             )
             if (mediaType == Constants.ANIME) {
                 AnimeProgress(item = item)
@@ -459,12 +458,12 @@ fun MediaItem(
 fun AnimeProgress(
     item: GetMediaListQuery.MediaList?,
 ) {
-    Text(
-        text = "Score: " + item?.score.toString() + "/10.0",
-        modifier = Modifier
-//                        .padding(10.dp)
-            .background(Color.Yellow)
-    )
+    //Score
+//    Text(
+//        text = "Score: " + item?.score.toString() + "/10.0",
+//        modifier = Modifier
+//            .background(Color.Yellow)
+//    )
     Text(
         text = "Progress: " + item?.progress + "/" + item?.media?.episodes.toString(),
         modifier = Modifier
