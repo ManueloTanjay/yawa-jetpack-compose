@@ -3,10 +3,7 @@ package com.example.yawa_anime_list
 import GetMediaListQuery
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -493,19 +490,15 @@ fun AnimeProgress(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-//            .background(Color.Red)
     ) {
         Spacer(
             modifier = Modifier
                 .fillMaxHeight(0.25F)
-//                .background(Color.White)
         )
         Text(
             text = "EPISODES",
             fontSize = 10.sp,
             color = Color.White,
-//            modifier = Modifier
-//                .background(Color.Yellow)
         )
         Row(
             modifier = Modifier
@@ -542,7 +535,6 @@ fun AnimeProgress(
             )
             Spacer(modifier = Modifier.width(5.dp))
             Card(
-//                shape = RoundedCornerShape(4.dp),
                 modifier = Modifier
                     .background(Color.Transparent)
                     .width(34.dp)
@@ -554,9 +546,11 @@ fun AnimeProgress(
                         setProgress((progress.toInt() + 1).toString())
                         Log.d(
                             "+_CLICKED",
-                            "incremented"
+                            item?.media?.title?.romaji.toString() + " episodes incremented"
                         )
                     },
+                shape = RoundedCornerShape(0.dp),
+                elevation = 0.dp
             ) {
                 Row(
                     horizontalArrangement = Arrangement.Center,
