@@ -1,5 +1,6 @@
 package com.example.yawa_anime_list
 
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import type.MediaListStatus
@@ -35,4 +36,30 @@ object Constants {
     val FONTCOLOR = Color(0xffffffff)
     val WHITE = Color(0xffffffff)
 
+    fun parseMediaFormat(raw: String): String {
+        when(raw.substringAfter("$").substringBefore("@")) {
+            "TV" -> return "TV"
+            "TV_SHORT" -> return "TV Short"
+            "MOVIE" -> return "Movie"
+            "SPECIAL" -> return "Special"
+            "OVA" -> return "OVA"
+            "ONA" -> return "ONA"
+            "MUSIC" -> return "Music"
+            "MANGA" -> return "Manga"
+            "NOVEL" -> return "Novel"
+            "ONE_SHOT" -> return "One Shot"
+        }
+        return ""
+    }
+
+    fun parseMediaSeason(raw: String): String {
+        Log.d("PARSEMEDIASEASON", raw.substringAfter("$").substringBefore("@"))
+        when(raw.substringAfter("$").substringBefore("@")) {
+            "WINTER" -> return "Winter"
+            "SPRING" -> return "Spring"
+            "SUMMER" -> return "Summer"
+            "FALL" -> return "Fall"
+        }
+        return "NULL"
+    }
 }

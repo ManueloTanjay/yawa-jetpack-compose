@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,9 +42,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import type.MediaListStatus
 import type.MediaType
 
@@ -439,9 +438,21 @@ fun MediaItem(
         ) {
             Text(
                 item?.media?.title?.romaji.toString(),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .background(Color.Yellow)
             )
+            Row(modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Red)
+            ) {
+                Text(
+                    Constants.parseMediaFormat(item?.media?.format.toString()),
+                    modifier = Modifier.background(Color.Magenta).fillMaxWidth(0.20F)
+                )
+                Text(Constants.parseMediaSeason(item?.media?.season.toString()) + ", " + item?.media?.seasonYear.toString())
+            }
             if (mediaType == Constants.ANIME) {
                 AnimeProgress(item = item)
             } else {
