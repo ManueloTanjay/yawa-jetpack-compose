@@ -547,47 +547,48 @@ fun AnimeProgress(
                         color = Color.White,
                         fontSize = 20.sp
                     )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Card(
-                        modifier = Modifier
-                            .background(Color.Transparent)
-                            .width(34.dp)
-                            .height(28.dp)
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = rememberRipple()
-                            ) {
-                                if (progress.toInt() + 1 < item?.media?.episodes!!.toInt()) {
-                                    setProgress((progress.toInt() + 1).toString())
 
-                                    when(mediaListStatus) {
-                                        Constants.CURRENT -> viewModel.currAnimeProg[index]++
-                                        Constants.COMPLETED -> viewModel.comAnimeProg[index]++
-                                        Constants.PLANNING -> viewModel.planAnimeProg[index]++
-                                        Constants.PAUSED -> viewModel.pauseAnimeProg[index]++
-                                        Constants.DROPPED -> viewModel.dropAnimeProg[index]++
-                                    }
-                                } else
-                                    setProgress(item?.media?.episodes.toString())
-                                Log.d(
-                                    "+_CLICKED",
-                                    item?.media?.title?.romaji.toString() + " episodes incremented"
-                                )
-                            },
-                        shape = RoundedCornerShape(0.dp),
-                        elevation = 0.dp
+                }
+            }
+            Spacer(modifier = Modifier.width(5.dp))
+            Card(
+                modifier = Modifier
+                    .background(Color.Transparent)
+                    .width(34.dp)
+                    .height(28.dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple()
                     ) {
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.background(Constants.CARDCOLOR)
-                        ) {
-                            Icon(
-                                Icons.Rounded.Add,
-                                tint = Color.White,
-                                contentDescription = "Localized description"
-                            )
-                        }
-                    }
+                        if (progress.toInt() + 1 < item?.media?.episodes!!.toInt()) {
+                            setProgress((progress.toInt() + 1).toString())
+
+                            when(mediaListStatus) {
+                                Constants.CURRENT -> viewModel.currAnimeProg[index]++
+                                Constants.COMPLETED -> viewModel.comAnimeProg[index]++
+                                Constants.PLANNING -> viewModel.planAnimeProg[index]++
+                                Constants.PAUSED -> viewModel.pauseAnimeProg[index]++
+                                Constants.DROPPED -> viewModel.dropAnimeProg[index]++
+                            }
+                        } else
+                            setProgress(item?.media?.episodes.toString())
+                        Log.d(
+                            "+_CLICKED",
+                            item?.media?.title?.romaji.toString() + " episodes incremented"
+                        )
+                    },
+                shape = RoundedCornerShape(0.dp),
+                elevation = 0.dp
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.background(Constants.CARDCOLOR)
+                ) {
+                    Icon(
+                        Icons.Rounded.Add,
+                        tint = Color.White,
+                        contentDescription = "Localized description"
+                    )
                 }
             }
         }
