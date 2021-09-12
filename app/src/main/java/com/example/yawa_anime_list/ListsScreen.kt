@@ -523,47 +523,70 @@ fun AnimeProgress(
 //                singleLine = true,
 //                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
 //            )
-            Text(
-                text = progress,
-                color = Color.White,
-                fontSize = 20.sp
-            )
-            Text(
-                text = "/" + item?.media?.episodes.toString(),
-                color = Color.White,
-                fontSize = 20.sp
-            )
-            Spacer(modifier = Modifier.width(5.dp))
             Card(
                 modifier = Modifier
-                    .background(Color.Transparent)
-                    .width(34.dp)
+                    .background(Constants.CARDCOLOR)
+//                    .width(34.dp)
                     .height(28.dp)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple()
                     ) {
-                        if (progress.toInt() + 1 < item?.media?.episodes!!.toInt())
-                            setProgress((progress.toInt() + 1).toString())
-                        else
-                            setProgress(item?.media?.episodes.toString())
                         Log.d(
-                            "+_CLICKED",
-                            item?.media?.title?.romaji.toString() + " episodes incremented"
+                            "PROGRESS_CLICKED",
+                            item?.media?.title?.romaji.toString() + " should pull up TextField"
                         )
                     },
                 shape = RoundedCornerShape(0.dp),
                 elevation = 0.dp
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.background(Constants.CARDCOLOR)
+                    modifier = Modifier
+                        .background(Constants.CARDCOLOR)
                 ) {
-                    Icon(
-                        Icons.Rounded.Add,
-                        tint = Color.White,
-                        contentDescription = "Localized description"
+                    Text(
+                        text = progress,
+                        color = Color.White,
+                        fontSize = 20.sp
                     )
+                    Text(
+                        text = "/" + item?.media?.episodes.toString(),
+                        color = Color.White,
+                        fontSize = 20.sp
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Card(
+                        modifier = Modifier
+                            .background(Color.Transparent)
+                            .width(34.dp)
+                            .height(28.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = rememberRipple()
+                            ) {
+                                if (progress.toInt() + 1 < item?.media?.episodes!!.toInt()) {
+                                    setProgress((progress.toInt() + 1).toString())
+                                } else
+                                    setProgress(item?.media?.episodes.toString())
+                                Log.d(
+                                    "+_CLICKED",
+                                    item?.media?.title?.romaji.toString() + " episodes incremented"
+                                )
+                            },
+                        shape = RoundedCornerShape(0.dp),
+                        elevation = 0.dp
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.background(Constants.CARDCOLOR)
+                        ) {
+                            Icon(
+                                Icons.Rounded.Add,
+                                tint = Color.White,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                    }
                 }
             }
         }

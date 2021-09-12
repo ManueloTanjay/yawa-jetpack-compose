@@ -53,7 +53,7 @@ object Constants {
     }
 
     fun parseMediaSeason(raw: String): String {
-        Log.d("PARSEMEDIASEASON", raw.substringAfter("$").substringBefore("@"))
+//        Log.d("PARSEMEDIASEASON", raw.substringAfter("$").substringBefore("@"))
         when(raw.substringAfter("$").substringBefore("@")) {
             "WINTER" -> return "Winter"
             "SPRING" -> return "Spring"
