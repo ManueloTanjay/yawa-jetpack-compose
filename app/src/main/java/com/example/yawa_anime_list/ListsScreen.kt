@@ -560,7 +560,7 @@ fun AnimeProgress(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple()
                     ) {
-                        if (progress.toInt() + 1 < item?.media?.episodes!!.toInt()) {
+                        if (progress.toInt() + 1 <= item?.media?.episodes!!.toInt()) {
                             setProgress((progress.toInt() + 1).toString())
 
                             when(mediaListStatus) {
