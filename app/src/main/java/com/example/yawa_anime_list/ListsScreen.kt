@@ -10,15 +10,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -29,10 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -402,7 +396,10 @@ fun MediaList(
                         .background(Constants.CARDCOLOR)
                         .fillMaxSize(),
                     item = item,
-                    mediaType
+                    mediaType,
+                    index,
+                    viewModel,
+                    mediaListStatus
                 )
             }
         }
@@ -418,7 +415,10 @@ fun MediaList(
 fun MediaItem(
     modifier: Modifier,
     item: GetMediaListQuery.MediaList?,
-    mediaType: MediaType
+    mediaType: MediaType,
+    index: Int,
+    viewModel: ListsScreenViewModel,
+    mediaListStatus: MediaListStatus
 ) {
     Row(
         modifier = modifier
@@ -469,7 +469,7 @@ fun MediaItem(
                     )
             }
             if (mediaType == Constants.ANIME) {
-                AnimeProgress(item = item)
+                AnimeProgress(item = item, index, viewModel, mediaListStatus)
             } else {
                 MangaProgress(item = item)
             }
@@ -483,9 +483,20 @@ fun MediaItem(
 @Composable
 fun AnimeProgress(
     item: GetMediaListQuery.MediaList?,
+    index: Int,
+    viewModel: ListsScreenViewModel,
+    mediaListStatus: MediaListStatus
 ) {
     val (progress, setProgress) = remember {
-        mutableStateOf(item?.progress.toString())
+        when(mediaListStatus) {
+            Constants.CURRENT -> {mutableStateOf(viewModel.currAnimeProg[index].toString())}
+            Constants.COMPLETED -> {mutableStateOf(viewModel.comAnimeProg[index].toString())}
+            Constants.PLANNING -> {mutableStateOf(viewModel.planAnimeProg[index].toString())}
+            Constants.PAUSED -> {mutableStateOf(viewModel.pauseAnimeProg[index].toString())}
+            Constants.DROPPED -> {mutableStateOf(viewModel.dropAnimeProg[index].toString())}
+            else -> mutableStateOf("0")
+        }
+
     }
     Column(
         modifier = Modifier
@@ -505,24 +516,6 @@ fun AnimeProgress(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-//            BasicTextField(
-//                modifier = Modifier.width(IntrinsicSize.Min),
-//                value = progress,
-//                textStyle = LocalTextStyle.current.copy(
-//                    textAlign = TextAlign.Start,
-//                    color = Color.White,
-//                    fontSize = 20.sp
-//                ),
-//                onValueChange = {
-//                    if (it == "") {
-//                        setProgress("0")
-//                    } else {
-//                        setProgress(it)
-//                    }
-//                },
-//                singleLine = true,
-//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-//            )
             Card(
                 modifier = Modifier
                     .background(Constants.CARDCOLOR)
@@ -566,6 +559,14 @@ fun AnimeProgress(
                             ) {
                                 if (progress.toInt() + 1 < item?.media?.episodes!!.toInt()) {
                                     setProgress((progress.toInt() + 1).toString())
+
+                                    when(mediaListStatus) {
+                                        Constants.CURRENT -> viewModel.currAnimeProg[index]++
+                                        Constants.COMPLETED -> viewModel.comAnimeProg[index]++
+                                        Constants.PLANNING -> viewModel.planAnimeProg[index]++
+                                        Constants.PAUSED -> viewModel.pauseAnimeProg[index]++
+                                        Constants.DROPPED -> viewModel.dropAnimeProg[index]++
+                                    }
                                 } else
                                     setProgress(item?.media?.episodes.toString())
                                 Log.d(

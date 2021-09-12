@@ -30,6 +30,21 @@ class ListsScreenViewModel : ViewModel() {
     val liveMediaDroppedManga = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
     val liveMediaPausedManga = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
 
+    ////////////////
+    var currAnimeProg = mutableListOf<Int>()
+    var comAnimeProg = mutableListOf<Int>()
+    var planAnimeProg = mutableListOf<Int>()
+    var pauseAnimeProg = mutableListOf<Int>()
+    var dropAnimeProg = mutableListOf<Int>()
+
+    var currMangaProg = mutableListOf<Int>()
+    var comMangaProg = mutableListOf<Int>()
+    var planMangaProg = mutableListOf<Int>()
+    var pauseMangaProg = mutableListOf<Int>()
+    var dropMangaProg = mutableListOf<Int>()
+
+
+
     private var nextPage = 1
     private var hasNextPage = true
 
@@ -64,11 +79,13 @@ class ListsScreenViewModel : ViewModel() {
         mediaType: MediaType
     ) {
         var media = mutableListOf<GetMediaListQuery.MediaList?>()
+        var prog = mutableListOf<Int>()
 
         //anime
         if (mediaType == Constants.ANIME) {
             if (mediaListStatus == Constants.CURRENT) {
                 media = liveMediaCurrentAnime.value?.toMutableList() ?: mutableListOf()
+                prog = currAnimeProg
                 nextPage = currentAnimeNextPage
                 if (!hasCurrentAnimeNextPage) {
                     Log.d("CURRENT ANIME", "Last page reached")
@@ -77,6 +94,7 @@ class ListsScreenViewModel : ViewModel() {
             }
             if (mediaListStatus == Constants.COMPLETED) {
                 media = liveMediaCompletedAnime.value?.toMutableList() ?: mutableListOf()
+                prog = comAnimeProg
                 nextPage = completedAnimeNextPage
                 if (!hasCompletedAnimeNextPage) {
                     Log.d("COMPLETED ANIME", "Last page reached")
@@ -85,6 +103,7 @@ class ListsScreenViewModel : ViewModel() {
             }
             if (mediaListStatus == Constants.PLANNING) {
                 media = liveMediaPlanningAnime.value?.toMutableList() ?: mutableListOf()
+                prog = planAnimeProg
                 nextPage = planningAnimeNextPage
                 if (!hasPlanningAnimeNextPage) {
                     Log.d("PLANNING ANIME", "Last page reached")
@@ -93,6 +112,7 @@ class ListsScreenViewModel : ViewModel() {
             }
             if (mediaListStatus == Constants.PAUSED) {
                 media = liveMediaPausedAnime.value?.toMutableList() ?: mutableListOf()
+                prog = pauseAnimeProg
                 nextPage = pausedAnimeNextPage
                 if (!hasPausedAnimeNextPage) {
                     Log.d("PAUSED ANIME", "Last page reached")
@@ -101,6 +121,7 @@ class ListsScreenViewModel : ViewModel() {
             }
             if (mediaListStatus == Constants.DROPPED) {
                 media = liveMediaDroppedAnime.value?.toMutableList() ?: mutableListOf()
+                prog = dropAnimeProg
                 nextPage = droppedAnimeNextPage
                 if (!hasDroppedAnimeNextPage) {
                     Log.d("DROPPED ANIME", "Last page reached")
@@ -112,6 +133,7 @@ class ListsScreenViewModel : ViewModel() {
         if (mediaType == Constants.MANGA) {
             if (mediaListStatus == Constants.CURRENT) {
                 media = liveMediaCurrentManga.value?.toMutableList() ?: mutableListOf()
+                prog = currMangaProg
                 nextPage = currentMangaNextPage
                 if (!hasCurrentMangaNextPage) {
                     Log.d("CURRENT MANGA", "Last page reached")
@@ -120,6 +142,7 @@ class ListsScreenViewModel : ViewModel() {
             }
             if (mediaListStatus == Constants.COMPLETED) {
                 media = liveMediaCompletedManga.value?.toMutableList() ?: mutableListOf()
+                prog = comMangaProg
                 nextPage = completedMangaNextPage
                 if (!hasCompletedMangaNextPage) {
                     Log.d("COMPLETED MANGA", "Last page reached")
@@ -128,6 +151,7 @@ class ListsScreenViewModel : ViewModel() {
             }
             if (mediaListStatus == Constants.PLANNING) {
                 media = liveMediaPlanningManga.value?.toMutableList() ?: mutableListOf()
+                prog = planMangaProg
                 nextPage = planningMangaNextPage
                 if (!hasPlanningMangaNextPage) {
                     Log.d("PLANNING MANGA", "Last page reached")
@@ -136,6 +160,7 @@ class ListsScreenViewModel : ViewModel() {
             }
             if (mediaListStatus == Constants.PAUSED) {
                 media = liveMediaPausedManga.value?.toMutableList() ?: mutableListOf()
+                prog = pauseMangaProg
                 nextPage = pausedMangaNextPage
                 if (!hasPausedMangaNextPage) {
                     Log.d("PAUSED MANGA", "Last page reached")
@@ -144,6 +169,7 @@ class ListsScreenViewModel : ViewModel() {
             }
             if (mediaListStatus == Constants.DROPPED) {
                 media = liveMediaDroppedManga.value?.toMutableList() ?: mutableListOf()
+                prog = dropMangaProg
                 nextPage = droppedMangaNextPage
                 if (!hasDroppedMangaNextPage) {
                     Log.d("DROPPED MANGA", "Last page reached")
@@ -159,6 +185,9 @@ class ListsScreenViewModel : ViewModel() {
             hasNextPage = page?.pageInfo?.hasNextPage ?: true
 
             media.addAll(page?.mediaList!!.toMutableList())
+            media.forEachIndexed { index, mediaList ->
+                prog.add(mediaList?.progress!!.toInt())
+            }
             //anime
             if (mediaType == Constants.ANIME) {
                 when (mediaListStatus) {
@@ -186,22 +215,28 @@ class ListsScreenViewModel : ViewModel() {
         if (mediaType == Constants.ANIME) {
             when (mediaListStatus) {
                 Constants.CURRENT -> {
+                    currAnimeProg = prog
+//                    Log.d("CHECK PROG", currAnimeProg.toString())
                     liveMediaCurrentAnime.value = media
                     currentAnimeNextPage++
                 }
                 Constants.COMPLETED -> {
+                    comAnimeProg = prog
                     liveMediaCompletedAnime.value = media
                     completedAnimeNextPage++
                 }
                 Constants.PLANNING -> {
+                    planAnimeProg = prog
                     liveMediaPlanningAnime.value = media
                     planningAnimeNextPage++
                 }
                 Constants.PAUSED -> {
+                    pauseAnimeProg = prog
                     liveMediaPausedAnime.value = media
                     pausedAnimeNextPage++
                 }
                 Constants.DROPPED -> {
+                    dropAnimeProg = prog
                     liveMediaDroppedAnime.value = media
                     droppedAnimeNextPage++
                 }
@@ -211,22 +246,27 @@ class ListsScreenViewModel : ViewModel() {
         if (mediaType == Constants.MANGA) {
             when (mediaListStatus) {
                 Constants.CURRENT -> {
+                    currMangaProg = prog
                     liveMediaCurrentManga.value = media
                     currentMangaNextPage++
                 }
                 Constants.COMPLETED -> {
+                    comMangaProg = prog
                     liveMediaCompletedManga.value = media
                     completedMangaNextPage++
                 }
                 Constants.PLANNING -> {
+                    planMangaProg = prog
                     liveMediaPlanningManga.value = media
                     planningMangaNextPage++
                 }
                 Constants.PAUSED -> {
+                    pauseMangaProg = prog
                     liveMediaPausedManga.value = media
                     pausedMangaNextPage++
                 }
                 Constants.DROPPED -> {
+                    dropMangaProg = prog
                     liveMediaDroppedManga.value = media
                     droppedMangaNextPage++
                 }
