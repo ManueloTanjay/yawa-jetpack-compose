@@ -555,11 +555,11 @@ fun AnimeProgress(
                     }
                 }
             }
-            Spacer(modifier = Modifier.width(5.dp))
+            Spacer(modifier = Modifier.width(2.dp))
             Card(
                 modifier = Modifier
                     .background(Color.Transparent)
-                    .width(34.dp)
+                    .width(28.dp)
                     .height(28.dp)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
