@@ -496,7 +496,6 @@ fun AnimeProgress(
             Constants.DROPPED -> {mutableStateOf(viewModel.dropAnimeProg[index].toString())}
             else -> mutableStateOf("0")
         }
-
     }
     Column(
         modifier = Modifier
@@ -504,50 +503,56 @@ fun AnimeProgress(
     ) {
         Spacer(
             modifier = Modifier
-                .fillMaxHeight(0.25F)
-        )
-        Text(
-            text = "EPISODES",
-            fontSize = 10.sp,
-            color = Color.White,
+                .fillMaxHeight(0.30F)
         )
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
-            Card(
-                modifier = Modifier
-                    .background(Constants.CARDCOLOR)
-//                    .width(34.dp)
-                    .height(28.dp)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple()
-                    ) {
-                        Log.d(
-                            "PROGRESS_CLICKED",
-                            item?.media?.title?.romaji.toString() + " should pull up TextField"
-                        )
-                    },
-                shape = RoundedCornerShape(0.dp),
-                elevation = 0.dp
+            Column(
+//                modifier = Modifier.background(Color.Red),
+                horizontalAlignment = Alignment.Start
             ) {
-                Row(
+                Text(
+                    text = "EPISODES",
+                    fontSize = 10.sp,
+                    color = Color.White,
+                )
+                Card(
                     modifier = Modifier
                         .background(Constants.CARDCOLOR)
+//                    .width(34.dp)
+                        .height(28.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple()
+                        ) {
+                            Log.d(
+                                "PROGRESS_CLICKED",
+                                item?.media?.title?.romaji.toString() + " should pull up TextField"
+                            )
+                        },
+                    shape = RoundedCornerShape(0.dp),
+                    elevation = 0.dp
                 ) {
-                    Text(
-                        text = progress,
-                        color = Color.White,
-                        fontSize = 20.sp
-                    )
-                    Text(
-                        text = "/" + item?.media?.episodes.toString(),
-                        color = Color.White,
-                        fontSize = 20.sp
-                    )
+                    Row(
+                        modifier = Modifier
+                            .background(Constants.CARDCOLOR)
+                    ) {
+                        Text(
+                            text = progress,
+                            color = Color.White,
+                            fontSize = 20.sp
+                        )
+                        Text(
+                            text = "/" + item?.media?.episodes.toString(),
+                            color = Color.White,
+                            fontSize = 20.sp
+                        )
 
+                    }
                 }
             }
             Spacer(modifier = Modifier.width(5.dp))
@@ -563,7 +568,7 @@ fun AnimeProgress(
                         if (progress.toInt() + 1 <= item?.media?.episodes!!.toInt()) {
                             setProgress((progress.toInt() + 1).toString())
 
-                            when(mediaListStatus) {
+                            when (mediaListStatus) {
                                 Constants.CURRENT -> viewModel.currAnimeProg[index]++
                                 Constants.COMPLETED -> viewModel.comAnimeProg[index]++
                                 Constants.PLANNING -> viewModel.planAnimeProg[index]++
