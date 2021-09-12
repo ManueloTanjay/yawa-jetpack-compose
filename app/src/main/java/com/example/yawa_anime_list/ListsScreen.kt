@@ -543,7 +543,10 @@ fun AnimeProgress(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple()
                     ) {
-                        setProgress((progress.toInt() + 1).toString())
+                        if (progress.toInt() + 1 < item?.media?.episodes!!.toInt())
+                            setProgress((progress.toInt() + 1).toString())
+                        else
+                            setProgress(item?.media?.episodes.toString())
                         Log.d(
                             "+_CLICKED",
                             item?.media?.title?.romaji.toString() + " episodes incremented"
