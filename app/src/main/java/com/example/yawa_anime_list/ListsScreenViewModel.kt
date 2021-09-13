@@ -198,9 +198,9 @@ class ListsScreenViewModel : ViewModel() {
 
             media.addAll(page?.mediaList!!.toMutableList())
             media.forEachIndexed { index, mediaList ->
-                prog[mediaList?.id!!] = mediaList?.progress!!.toInt()
-                if(mediaList?.progressVolumes != null)
-                    volProg[mediaList?.id!!] = mediaList?.progressVolumes!!.toInt()
+                prog[mediaList?.id!!] = mediaList.progress!!.toInt()
+                if(mediaList.progressVolumes != null)
+                    volProg[mediaList.id] = mediaList.progressVolumes.toInt()
             }
             //anime
             if (mediaType == Constants.ANIME) {
