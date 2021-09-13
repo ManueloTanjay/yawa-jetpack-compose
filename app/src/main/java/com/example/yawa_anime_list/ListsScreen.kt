@@ -569,11 +569,11 @@ fun AnimeProgress(
                             setProgress((progress.toInt() + 1).toString())
 
                             when (mediaListStatus) {
-                                Constants.CURRENT -> viewModel.currAnimeProg[index] = viewModel.currAnimeProg[item?.id!!.toInt()]!!.plus(1)
-                                Constants.COMPLETED -> viewModel.comAnimeProg[index] = viewModel.comAnimeProg[item?.id!!.toInt()]!!.plus(1)
-                                Constants.PLANNING -> viewModel.planAnimeProg[index] = viewModel.planAnimeProg[item?.id!!.toInt()]!!.plus(1)
-                                Constants.PAUSED -> viewModel.pauseAnimeProg[index] = viewModel.pauseAnimeProg[item?.id!!.toInt()]!!.plus(1)
-                                Constants.DROPPED -> viewModel.dropAnimeProg[index] = viewModel.dropAnimeProg[item?.id!!.toInt()]!!.plus(1)
+                                Constants.CURRENT -> viewModel.currAnimeProg[item?.id!!.toInt()] = viewModel.currAnimeProg[item?.id!!.toInt()]!!.plus(1)
+                                Constants.COMPLETED -> viewModel.comAnimeProg[item?.id!!.toInt()] = viewModel.comAnimeProg[item?.id!!.toInt()]!!.plus(1)
+                                Constants.PLANNING -> viewModel.planAnimeProg[item?.id!!.toInt()] = viewModel.planAnimeProg[item?.id!!.toInt()]!!.plus(1)
+                                Constants.PAUSED -> viewModel.pauseAnimeProg[item?.id!!.toInt()] = viewModel.pauseAnimeProg[item?.id!!.toInt()]!!.plus(1)
+                                Constants.DROPPED -> viewModel.dropAnimeProg[item?.id!!.toInt()] = viewModel.dropAnimeProg[item?.id!!.toInt()]!!.plus(1)
                             }
                         } else
                             setProgress(item?.media?.episodes.toString())
