@@ -397,7 +397,6 @@ fun MediaList(
                         .fillMaxSize(),
                     item = item,
                     mediaType,
-                    index,
                     viewModel,
                     mediaListStatus
                 )
@@ -416,7 +415,6 @@ fun MediaItem(
     modifier: Modifier,
     item: GetMediaListQuery.MediaList?,
     mediaType: MediaType,
-    index: Int,
     viewModel: ListsScreenViewModel,
     mediaListStatus: MediaListStatus
 ) {
@@ -469,7 +467,7 @@ fun MediaItem(
                     )
             }
             if (mediaType == Constants.ANIME) {
-                AnimeProgress(item = item, index, viewModel, mediaListStatus)
+                AnimeProgress(item = item, viewModel, mediaListStatus)
             } else {
                 MangaProgress(item = item)
             }
@@ -483,17 +481,27 @@ fun MediaItem(
 @Composable
 fun AnimeProgress(
     item: GetMediaListQuery.MediaList?,
-    index: Int,
+//    index: Int,
     viewModel: ListsScreenViewModel,
     mediaListStatus: MediaListStatus
 ) {
     val (progress, setProgress) = remember {
-        when(mediaListStatus) {
-            Constants.CURRENT -> {mutableStateOf(viewModel.currAnimeProg[item?.id!!.toInt()].toString())}
-            Constants.COMPLETED -> {mutableStateOf(viewModel.comAnimeProg[item?.id!!.toInt()].toString())}
-            Constants.PLANNING -> {mutableStateOf(viewModel.planAnimeProg[item?.id!!.toInt()].toString())}
-            Constants.PAUSED -> {mutableStateOf(viewModel.pauseAnimeProg[item?.id!!.toInt()].toString())}
-            Constants.DROPPED -> {mutableStateOf(viewModel.dropAnimeProg[item?.id!!.toInt()].toString())}
+        when (mediaListStatus) {
+            Constants.CURRENT -> {
+                mutableStateOf(viewModel.currAnimeProg[item?.id!!.toInt()].toString())
+            }
+            Constants.COMPLETED -> {
+                mutableStateOf(viewModel.comAnimeProg[item?.id!!.toInt()].toString())
+            }
+            Constants.PLANNING -> {
+                mutableStateOf(viewModel.planAnimeProg[item?.id!!.toInt()].toString())
+            }
+            Constants.PAUSED -> {
+                mutableStateOf(viewModel.pauseAnimeProg[item?.id!!.toInt()].toString())
+            }
+            Constants.DROPPED -> {
+                mutableStateOf(viewModel.dropAnimeProg[item?.id!!.toInt()].toString())
+            }
             else -> mutableStateOf("0")
         }
     }
@@ -569,17 +577,32 @@ fun AnimeProgress(
                             setProgress((progress.toInt() + 1).toString())
 
                             when (mediaListStatus) {
-                                Constants.CURRENT -> viewModel.currAnimeProg[item?.id!!.toInt()] = viewModel.currAnimeProg[item?.id!!.toInt()]!!.plus(1)
-                                Constants.COMPLETED -> viewModel.comAnimeProg[item?.id!!.toInt()] = viewModel.comAnimeProg[item?.id!!.toInt()]!!.plus(1)
-                                Constants.PLANNING -> viewModel.planAnimeProg[item?.id!!.toInt()] = viewModel.planAnimeProg[item?.id!!.toInt()]!!.plus(1)
-                                Constants.PAUSED -> viewModel.pauseAnimeProg[item?.id!!.toInt()] = viewModel.pauseAnimeProg[item?.id!!.toInt()]!!.plus(1)
-                                Constants.DROPPED -> viewModel.dropAnimeProg[item?.id!!.toInt()] = viewModel.dropAnimeProg[item?.id!!.toInt()]!!.plus(1)
+                                Constants.CURRENT -> {
+                                    viewModel.currAnimeProg[item.id] =
+                                        viewModel.currAnimeProg[item.id]!!.plus(1)
+                                }
+                                Constants.COMPLETED -> {
+                                    viewModel.comAnimeProg[item.id] =
+                                        viewModel.comAnimeProg[item.id]!!.plus(1)
+                                }
+                                Constants.PLANNING -> {
+                                    viewModel.planAnimeProg[item.id] =
+                                        viewModel.planAnimeProg[item.id]!!.plus(1)
+                                }
+                                Constants.PAUSED -> {
+                                    viewModel.pauseAnimeProg[item.id] =
+                                        viewModel.pauseAnimeProg[item.id]!!.plus(1)
+                                }
+                                Constants.DROPPED -> {
+                                    viewModel.dropAnimeProg[item.id] =
+                                        viewModel.dropAnimeProg[item.id]!!.plus(1)
+                                }
                             }
                         } else
-                            setProgress(item?.media?.episodes.toString())
+                            setProgress(item.media.episodes.toString())
                         Log.d(
                             "+_CLICKED",
-                            item?.media?.title?.romaji.toString() + " episodes incremented"
+                            item.media.title?.romaji.toString() + " episodes incremented"
                         )
                     },
                 shape = RoundedCornerShape(0.dp),
