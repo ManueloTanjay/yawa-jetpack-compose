@@ -7,6 +7,8 @@ import type.MediaListStatus
 import type.MediaType
 
 object Constants {
+    //
+    val MAXINT = 2147483647
 
     //  MediaListStatus for mediaList queries, paired with username or userID, query authenticated with sessionToken
     val CURRENT: MediaListStatus = MediaListStatus.CURRENT
