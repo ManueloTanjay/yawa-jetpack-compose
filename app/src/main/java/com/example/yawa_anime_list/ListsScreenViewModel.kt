@@ -31,17 +31,17 @@ class ListsScreenViewModel : ViewModel() {
     val liveMediaPausedManga = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
 
     ////////////////
-    var currAnimeProg = mutableListOf<Int>()
-    var comAnimeProg = mutableListOf<Int>()
-    var planAnimeProg = mutableListOf<Int>()
-    var pauseAnimeProg = mutableListOf<Int>()
-    var dropAnimeProg = mutableListOf<Int>()
+    var currAnimeProg = mutableMapOf<Int, Int>()
+    var comAnimeProg = mutableMapOf<Int, Int>()
+    var planAnimeProg = mutableMapOf<Int, Int>()
+    var pauseAnimeProg = mutableMapOf<Int, Int>()
+    var dropAnimeProg = mutableMapOf<Int, Int>()
 
-    var currMangaProg = mutableListOf<Int>()
-    var comMangaProg = mutableListOf<Int>()
-    var planMangaProg = mutableListOf<Int>()
-    var pauseMangaProg = mutableListOf<Int>()
-    var dropMangaProg = mutableListOf<Int>()
+    var currMangaProg = mutableMapOf<Int, Int>()
+    var comMangaProg = mutableMapOf<Int, Int>()
+    var planMangaProg = mutableMapOf<Int, Int>()
+    var pauseMangaProg = mutableMapOf<Int, Int>()
+    var dropMangaProg = mutableMapOf<Int, Int>()
 
 
 
@@ -79,7 +79,7 @@ class ListsScreenViewModel : ViewModel() {
         mediaType: MediaType
     ) {
         var media = mutableListOf<GetMediaListQuery.MediaList?>()
-        var prog = mutableListOf<Int>()
+        var prog = mutableMapOf<Int, Int>()
 
         //anime
         if (mediaType == Constants.ANIME) {
@@ -186,7 +186,7 @@ class ListsScreenViewModel : ViewModel() {
 
             media.addAll(page?.mediaList!!.toMutableList())
             media.forEachIndexed { index, mediaList ->
-                prog.add(mediaList?.progress!!.toInt())
+                prog[mediaList?.id!!] = mediaList?.progress!!.toInt()
             }
             //anime
             if (mediaType == Constants.ANIME) {
