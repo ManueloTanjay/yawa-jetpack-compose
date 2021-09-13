@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import type.MediaListStatus
 import type.MediaType
@@ -33,6 +34,7 @@ import type.MediaType
  *   Layout representing a MediaItem which is made up of an Image, title, score, and progress
  *   works for both anime and manga (they have different ways of tracking progress)
  */
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun MediaItem(
     modifier: Modifier,

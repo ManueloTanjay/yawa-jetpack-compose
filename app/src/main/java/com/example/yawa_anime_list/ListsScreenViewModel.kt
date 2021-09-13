@@ -30,7 +30,7 @@ class ListsScreenViewModel : ViewModel() {
     val liveMediaDroppedManga = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
     val liveMediaPausedManga = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
 
-    ////////////////
+    //progress lists for anime episodes and manga chapters and volumes
     var currAnimeProg = mutableMapOf<Int, Int>()
     var comAnimeProg = mutableMapOf<Int, Int>()
     var planAnimeProg = mutableMapOf<Int, Int>()
