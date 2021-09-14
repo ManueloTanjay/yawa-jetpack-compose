@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity() {
         val sharedPreferences = getSharedPreferences("yawa", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
+        /*TODO: check for session token expiration*/
         lifecycleScope.launch {
             if (hasLoggedIn(sharedPreferences)) {
                 Log.d(TAG, "User has logged in previously")
