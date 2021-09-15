@@ -191,7 +191,7 @@ fun AnimeProgress(
                                 fontSize = 20.sp
                             )
                             Text(
-                                text = "/" + if(item?.media?.episodes.toString() == "null") " - " else item?.media?.episodes.toString(),
+                                text = "/" + if (item?.media?.episodes.toString() == "null") " - " else item?.media?.episodes.toString(),
                                 color = Color.White,
                                 fontSize = 20.sp
                             )
@@ -262,7 +262,8 @@ fun AnimeProgress(
         Box(modifier = Modifier.align(Alignment.BottomCenter)) {
             LinearProgressIndicator(
                 modifier = Modifier.fillMaxWidth(),
-                progress = animatedProgress/ (item?.media?.episodes?.toFloat() ?: animatedProgress) ,
+                progress = animatedProgress / (item?.media?.episodes?.toFloat()
+                    ?: animatedProgress),
                 color = Color.Blue
             )
         }
@@ -298,6 +299,10 @@ fun MangaProgress(
             else -> mutableStateOf("0")
         }
     }
+    val animatedProgress = animateFloatAsState(
+        targetValue = progress.toFloat(),
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+    ).value
     val (volProgress, setVolProgress) = remember {
         when (mediaListStatus) {
             Constants.CURRENT -> {
@@ -318,217 +323,258 @@ fun MangaProgress(
             else -> mutableStateOf("0")
         }
     }
-    
-    Column(
+    val animatedVolProgress = animateFloatAsState(
+        targetValue = volProgress.toFloat(),
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+    ).value
+
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
     ) {
-        Spacer(
+
+        Column(
             modifier = Modifier
-                .fillMaxHeight(0.30F)
-        )
-        Row(
+                .fillMaxWidth()
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxHeight(0.30F)
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = "CHAPTERS",
+                        fontSize = 10.sp,
+                        color = Color.White,
+                    )
+                    Card(
+                        modifier = Modifier
+                            .background(Constants.CARDCOLOR)
+                            .height(28.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = rememberRipple()
+                            ) {
+                                Log.d(
+                                    "PROGRESS_CLICKED",
+                                    item?.media?.title?.romaji.toString() + " should pull up TextField"
+                                )
+                            },
+                        shape = RoundedCornerShape(0.dp),
+                        elevation = 0.dp
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .background(Constants.CARDCOLOR)
+                        ) {
+                            Text(
+                                text = progress,
+                                color = Color.White,
+                                fontSize = 20.sp
+                            )
+                            Text(
+                                text = "/" + if (item?.media?.chapters.toString() == "null") " - " else item?.media?.chapters.toString(),
+                                color = Color.White,
+                                fontSize = 20.sp
+                            )
+
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.width(2.dp))
+                Card(
+                    modifier = Modifier
+                        .background(Color.Transparent)
+                        .width(28.dp)
+                        .height(28.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple()
+                        ) {
+                            val chapters = item?.media?.chapters ?: Constants.MAXINT
+                            if (progress.toInt() + 1 <= chapters) {
+                                setProgress((progress.toInt() + 1).toString())
+                                when (mediaListStatus) {
+                                    Constants.CURRENT -> {
+                                        viewModel.currMangaProg[item!!.id] =
+                                            viewModel.currMangaProg[item.id]!!.plus(1)
+                                    }
+                                    Constants.COMPLETED -> {
+                                        viewModel.comMangaProg[item!!.id] =
+                                            viewModel.comMangaProg[item.id]!!.plus(1)
+                                    }
+                                    Constants.PLANNING -> {
+                                        viewModel.planMangaProg[item!!.id] =
+                                            viewModel.planMangaProg[item.id]!!.plus(1)
+                                    }
+                                    Constants.PAUSED -> {
+                                        viewModel.pauseMangaProg[item!!.id] =
+                                            viewModel.pauseMangaProg[item.id]!!.plus(1)
+                                    }
+                                    Constants.DROPPED -> {
+                                        viewModel.dropMangaProg[item!!.id] =
+                                            viewModel.dropMangaProg[item.id]!!.plus(1)
+                                    }
+                                }
+                            } else
+                                setProgress(item?.media?.chapters.toString())
+                            Log.d(
+                                "+_CLICKED",
+                                item?.media?.title?.romaji.toString() + " chapters incremented"
+                            )
+                        },
+                    shape = RoundedCornerShape(0.dp),
+                    elevation = 0.dp
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.background(Constants.CARDCOLOR)
+                    ) {
+                        Icon(
+                            Icons.Rounded.Add,
+                            tint = Color.White,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(20.dp))
+                Column(
+//                modifier = Modifier.background(Color.Red),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = "VOLUMES",
+                        fontSize = 10.sp,
+                        color = Color.White,
+                    )
+                    Card(
+                        modifier = Modifier
+                            .background(Constants.CARDCOLOR)
+                            .height(28.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = rememberRipple()
+                            ) {
+                                Log.d(
+                                    "PROGRESS_CLICKED",
+                                    item?.media?.title?.romaji.toString() + " should pull up TextField"
+                                )
+                            },
+                        shape = RoundedCornerShape(0.dp),
+                        elevation = 0.dp
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .background(Constants.CARDCOLOR)
+                        ) {
+                            Text(
+                                text = volProgress,
+                                color = Color.White,
+                                fontSize = 20.sp
+                            )
+                            Text(
+                                text = "/" + if (item?.media?.volumes.toString() == "null") " - " else item?.media?.volumes.toString(),
+                                color = Color.White,
+                                fontSize = 20.sp
+                            )
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.width(2.dp))
+                Card(
+                    modifier = Modifier
+                        .background(Color.Transparent)
+                        .width(28.dp)
+                        .height(28.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple()
+                        ) {
+                            val volumes = item?.media?.volumes ?: Constants.MAXINT
+                            if (volProgress.toInt() + 1 <= volumes) {
+                                setVolProgress((volProgress.toInt() + 1).toString())
+                                when (mediaListStatus) {
+                                    Constants.CURRENT -> {
+                                        viewModel.currMangaVolProg[item!!.id] =
+                                            viewModel.currMangaVolProg[item.id]!!.plus(1)
+                                    }
+                                    Constants.COMPLETED -> {
+                                        viewModel.comMangaVolProg[item!!.id] =
+                                            viewModel.comMangaVolProg[item.id]!!.plus(1)
+                                    }
+                                    Constants.PLANNING -> {
+                                        viewModel.planMangaVolProg[item!!.id] =
+                                            viewModel.planMangaVolProg[item.id]!!.plus(1)
+                                    }
+                                    Constants.PAUSED -> {
+                                        viewModel.pauseMangaVolProg[item!!.id] =
+                                            viewModel.pauseMangaVolProg[item.id]!!.plus(1)
+                                    }
+                                    Constants.DROPPED -> {
+                                        viewModel.dropMangaVolProg[item!!.id] =
+                                            viewModel.dropMangaVolProg[item.id]!!.plus(1)
+                                    }
+                                }
+                            } else
+                                setVolProgress(item?.media?.volumes.toString())
+                            Log.d(
+                                "+_CLICKED",
+                                item?.media?.title?.romaji.toString() + " volumes incremented"
+                            )
+                        },
+                    shape = RoundedCornerShape(0.dp),
+                    elevation = 0.dp
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.background(Constants.CARDCOLOR)
+                    ) {
+                        Icon(
+                            Icons.Rounded.Add,
+                            tint = Color.White,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                }
+            }
+        }
+        Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                progress = animatedProgress / (item?.media?.chapters?.toFloat()
+                    ?: animatedProgress),
+                color = Color.Blue
+            )
+        }
+        Box(
             modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+                .align(Alignment.BottomEnd)
+//                .background(Color.Red)
+                .size(64.dp)
+                .padding(top = 18.dp, bottom = 18.dp, start = 18.dp, end = 14.dp)
         ) {
             Column(
-                horizontalAlignment = Alignment.Start
+                modifier = Modifier
+                    .fillMaxSize()
+//                    .background(Color.Green)
+//                    .padding(10.dp)
             ) {
-                Text(
-                    text = "CHAPTERS",
-                    fontSize = 10.sp,
-                    color = Color.White,
-                )
-                Card(
-                    modifier = Modifier
-                        .background(Constants.CARDCOLOR)
-                        .height(28.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = rememberRipple()
-                        ) {
-                            Log.d(
-                                "PROGRESS_CLICKED",
-                                item?.media?.title?.romaji.toString() + " should pull up TextField"
-                            )
-                        },
-                    shape = RoundedCornerShape(0.dp),
-                    elevation = 0.dp
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .background(Constants.CARDCOLOR)
-                    ) {
-                        Text(
-                            text = progress,
-                            color = Color.White,
-                            fontSize = 20.sp
-                        )
-                        Text(
-                            text = "/" + if(item?.media?.chapters.toString() == "null") " - " else item?.media?.chapters.toString(),
-                            color = Color.White,
-                            fontSize = 20.sp
-                        )
+                CircularProgressIndicator(
+//                modifier = Modifier.fillMaxWidth().size(15.dp),
+                    progress = animatedVolProgress / (item?.media?.volumes?.toFloat()
+                        ?: animatedVolProgress),
+                    color = Color.Blue,
+                    strokeWidth = 6.dp,
 
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.width(2.dp))
-            Card(
-                modifier = Modifier
-                    .background(Color.Transparent)
-                    .width(28.dp)
-                    .height(28.dp)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple()
-                    ) {
-                        val chapters = item?.media?.chapters ?: Constants.MAXINT
-                        if (progress.toInt() + 1 <= chapters) {
-                            setProgress((progress.toInt() + 1).toString())
-                            when (mediaListStatus) {
-                                Constants.CURRENT -> {
-                                    viewModel.currMangaProg[item!!.id] =
-                                        viewModel.currMangaProg[item.id]!!.plus(1)
-                                }
-                                Constants.COMPLETED -> {
-                                    viewModel.comMangaProg[item!!.id] =
-                                        viewModel.comMangaProg[item.id]!!.plus(1)
-                                }
-                                Constants.PLANNING -> {
-                                    viewModel.planMangaProg[item!!.id] =
-                                        viewModel.planMangaProg[item.id]!!.plus(1)
-                                }
-                                Constants.PAUSED -> {
-                                    viewModel.pauseMangaProg[item!!.id] =
-                                        viewModel.pauseMangaProg[item.id]!!.plus(1)
-                                }
-                                Constants.DROPPED -> {
-                                    viewModel.dropMangaProg[item!!.id] =
-                                        viewModel.dropMangaProg[item.id]!!.plus(1)
-                                }
-                            }
-                        } else
-                            setProgress(item?.media?.chapters.toString())
-                        Log.d(
-                            "+_CLICKED",
-                            item?.media?.title?.romaji.toString() + " chapters incremented"
-                        )
-                    },
-                shape = RoundedCornerShape(0.dp),
-                elevation = 0.dp
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.background(Constants.CARDCOLOR)
-                ) {
-                    Icon(
-                        Icons.Rounded.Add,
-                        tint = Color.White,
-                        contentDescription = "Localized description"
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.width(20.dp))
-            Column(
-//                modifier = Modifier.background(Color.Red),
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    text = "VOLUMES",
-                    fontSize = 10.sp,
-                    color = Color.White,
                 )
-                Card(
-                    modifier = Modifier
-                        .background(Constants.CARDCOLOR)
-                        .height(28.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = rememberRipple()
-                        ) {
-                            Log.d(
-                                "PROGRESS_CLICKED",
-                                item?.media?.title?.romaji.toString() + " should pull up TextField"
-                            )
-                        },
-                    shape = RoundedCornerShape(0.dp),
-                    elevation = 0.dp
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .background(Constants.CARDCOLOR)
-                    ) {
-                        Text(
-                            text = volProgress,
-                            color = Color.White,
-                            fontSize = 20.sp
-                        )
-                        Text(
-                            text = "/" + if(item?.media?.volumes.toString() == "null") " - " else item?.media?.volumes.toString(),
-                            color = Color.White,
-                            fontSize = 20.sp
-                        )
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.width(2.dp))
-            Card(
-                modifier = Modifier
-                    .background(Color.Transparent)
-                    .width(28.dp)
-                    .height(28.dp)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple()
-                    ) {
-                        val volumes = item?.media?.volumes ?: Constants.MAXINT
-                        if (volProgress.toInt() + 1 <= volumes) {
-                            setVolProgress((volProgress.toInt() + 1).toString())
-                            when (mediaListStatus) {
-                                Constants.CURRENT -> {
-                                    viewModel.currMangaVolProg[item!!.id] =
-                                        viewModel.currMangaVolProg[item.id]!!.plus(1)
-                                }
-                                Constants.COMPLETED -> {
-                                    viewModel.comMangaVolProg[item!!.id] =
-                                        viewModel.comMangaVolProg[item.id]!!.plus(1)
-                                }
-                                Constants.PLANNING -> {
-                                    viewModel.planMangaVolProg[item!!.id] =
-                                        viewModel.planMangaVolProg[item.id]!!.plus(1)
-                                }
-                                Constants.PAUSED -> {
-                                    viewModel.pauseMangaVolProg[item!!.id] =
-                                        viewModel.pauseMangaVolProg[item.id]!!.plus(1)
-                                }
-                                Constants.DROPPED -> {
-                                    viewModel.dropMangaVolProg[item!!.id] =
-                                        viewModel.dropMangaVolProg[item.id]!!.plus(1)
-                                }
-                            }
-                        } else
-                            setVolProgress(item?.media?.volumes.toString())
-                        Log.d(
-                            "+_CLICKED",
-                            item?.media?.title?.romaji.toString() + " volumes incremented"
-                        )
-                    },
-                shape = RoundedCornerShape(0.dp),
-                elevation = 0.dp
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.background(Constants.CARDCOLOR)
-                ) {
-                    Icon(
-                        Icons.Rounded.Add,
-                        tint = Color.White,
-                        contentDescription = "Localized description"
-                    )
-                }
             }
         }
     }
