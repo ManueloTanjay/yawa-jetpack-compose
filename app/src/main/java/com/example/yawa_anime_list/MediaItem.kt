@@ -1,15 +1,14 @@
 package com.example.yawa_anime_list
 
 import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.ripple.rememberRipple
@@ -61,7 +60,7 @@ fun MediaItem(
             modifier = Modifier
                 .height(Constants.IMAGE_HEIGHT)
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp, vertical = 5.dp)
+//                .padding(horizontal = 10.dp, vertical = 0.dp)
 //                .background(Color.Green)
         ) {
             Text(
@@ -74,6 +73,7 @@ fun MediaItem(
                 modifier = Modifier
 //                    .background(Color.Yellow)
                     .fillMaxWidth(0.8F)
+                    .padding(top = 5.dp, start = 10.dp)
             )
             Row(
                 modifier = Modifier
@@ -84,7 +84,8 @@ fun MediaItem(
                     Constants.parseMediaFormat(item?.media?.format.toString()),
                     fontSize = 12.sp,
                     color = Color.White,
-//                    modifier = Modifier.background(Color.Magenta)
+                    modifier = Modifier
+                        .padding(start = 10.dp)
                 )
                 if (mediaType == Constants.ANIME)
                     Text(
@@ -132,118 +133,138 @@ fun AnimeProgress(
             else -> mutableStateOf("0")
         }
     }
-    Column(
+    val animatedProgress = animateFloatAsState(
+        targetValue = progress.toFloat(),
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+    ).value
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
+//            .background(Color.Green)
     ) {
-        Spacer(
+        Column(
             modifier = Modifier
-                .fillMaxHeight(0.30F)
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+                .fillMaxSize()
+//            .background(Color.Red)
         ) {
-            Column(
-                horizontalAlignment = Alignment.Start
+            Spacer(
+                modifier = Modifier
+                    .fillMaxHeight(0.30F)
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = "EPISODES",
-                    fontSize = 10.sp,
-                    color = Color.White,
-                )
+                Column(
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = "EPISODES",
+                        fontSize = 10.sp,
+                        color = Color.White,
+                    )
+                    Card(
+                        modifier = Modifier
+                            .background(Constants.CARDCOLOR)
+                            .height(28.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = rememberRipple()
+                            ) {
+                                Log.d(
+                                    "PROGRESS_CLICKED",
+                                    item?.media?.title?.romaji.toString() + " should pull up TextField"
+                                )
+                            },
+                        shape = RoundedCornerShape(0.dp),
+                        elevation = 0.dp
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .background(Constants.CARDCOLOR)
+                        ) {
+                            Text(
+                                text = progress,
+                                color = Color.White,
+                                fontSize = 20.sp
+                            )
+                            Text(
+                                text = "/" + if(item?.media?.episodes.toString() == "null") " - " else item?.media?.episodes.toString(),
+                                color = Color.White,
+                                fontSize = 20.sp
+                            )
+
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.width(2.dp))
                 Card(
                     modifier = Modifier
-                        .background(Constants.CARDCOLOR)
+                        .background(Color.Transparent)
+                        .width(28.dp)
                         .height(28.dp)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple()
                         ) {
+                            val episodes = item?.media?.episodes ?: Constants.MAXINT
+                            if (progress.toInt() + 1 <= episodes) {
+                                setProgress((progress.toInt() + 1).toString())
+                                when (mediaListStatus) {
+                                    Constants.CURRENT -> {
+                                        viewModel.currAnimeProg[item!!.id] =
+                                            viewModel.currAnimeProg[item.id]!!.plus(1)
+                                    }
+                                    Constants.COMPLETED -> {
+                                        viewModel.comAnimeProg[item!!.id] =
+                                            viewModel.comAnimeProg[item.id]!!.plus(1)
+                                    }
+                                    Constants.PLANNING -> {
+                                        viewModel.planAnimeProg[item!!.id] =
+                                            viewModel.planAnimeProg[item.id]!!.plus(1)
+                                    }
+                                    Constants.PAUSED -> {
+                                        viewModel.pauseAnimeProg[item!!.id] =
+                                            viewModel.pauseAnimeProg[item.id]!!.plus(1)
+                                    }
+                                    Constants.DROPPED -> {
+                                        viewModel.dropAnimeProg[item!!.id] =
+                                            viewModel.dropAnimeProg[item.id]!!.plus(1)
+                                    }
+                                }
+                            } else
+                                setProgress(item?.media?.episodes.toString())
                             Log.d(
-                                "PROGRESS_CLICKED",
-                                item?.media?.title?.romaji.toString() + " should pull up TextField"
+                                "+_CLICKED",
+                                item?.media?.title?.romaji.toString() + " episodes incremented"
                             )
                         },
                     shape = RoundedCornerShape(0.dp),
                     elevation = 0.dp
                 ) {
                     Row(
+                        horizontalArrangement = Arrangement.Center,
                         modifier = Modifier
                             .background(Constants.CARDCOLOR)
+                            .padding(2.dp)
                     ) {
-                        Text(
-                            text = progress,
-                            color = Color.White,
-                            fontSize = 20.sp
+                        Icon(
+                            Icons.Rounded.Add,
+                            tint = Color.White,
+                            contentDescription = "Localized description"
                         )
-                        Text(
-                            text = "/" + if(item?.media?.episodes.toString() == "null") " - " else item?.media?.episodes.toString(),
-                            color = Color.White,
-                            fontSize = 20.sp
-                        )
-
                     }
                 }
             }
-            Spacer(modifier = Modifier.width(2.dp))
-            Card(
-                modifier = Modifier
-                    .background(Color.Transparent)
-                    .width(28.dp)
-                    .height(28.dp)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple()
-                    ) {
-                        val episodes = item?.media?.episodes ?: Constants.MAXINT
-                        if (progress.toInt() + 1 <= episodes) {
-                            setProgress((progress.toInt() + 1).toString())
-                            when (mediaListStatus) {
-                                Constants.CURRENT -> {
-                                    viewModel.currAnimeProg[item!!.id] =
-                                        viewModel.currAnimeProg[item.id]!!.plus(1)
-                                }
-                                Constants.COMPLETED -> {
-                                    viewModel.comAnimeProg[item!!.id] =
-                                        viewModel.comAnimeProg[item.id]!!.plus(1)
-                                }
-                                Constants.PLANNING -> {
-                                    viewModel.planAnimeProg[item!!.id] =
-                                        viewModel.planAnimeProg[item.id]!!.plus(1)
-                                }
-                                Constants.PAUSED -> {
-                                    viewModel.pauseAnimeProg[item!!.id] =
-                                        viewModel.pauseAnimeProg[item.id]!!.plus(1)
-                                }
-                                Constants.DROPPED -> {
-                                    viewModel.dropAnimeProg[item!!.id] =
-                                        viewModel.dropAnimeProg[item.id]!!.plus(1)
-                                }
-                            }
-                        } else
-                            setProgress(item?.media?.episodes.toString())
-                        Log.d(
-                            "+_CLICKED",
-                            item?.media?.title?.romaji.toString() + " episodes incremented"
-                        )
-                    },
-                shape = RoundedCornerShape(0.dp),
-                elevation = 0.dp
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.background(Constants.CARDCOLOR)
-                ) {
-                    Icon(
-                        Icons.Rounded.Add,
-                        tint = Color.White,
-                        contentDescription = "Localized description"
-                    )
-                }
-            }
+        }
+        Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                progress = animatedProgress/ (item?.media?.episodes?.toFloat() ?: animatedProgress) ,
+                color = Color.Blue
+            )
         }
     }
 }
@@ -297,6 +318,7 @@ fun MangaProgress(
             else -> mutableStateOf("0")
         }
     }
+    
     Column(
         modifier = Modifier
             .fillMaxWidth()

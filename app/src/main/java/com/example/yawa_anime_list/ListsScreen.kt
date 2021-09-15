@@ -61,7 +61,7 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
     }
 
     val viewModel = ViewModelProvider(store).get(ListsScreenViewModel::class.java)
-    /*TODO: put into for loop in separate function*/
+    /*TODO: put into for loop in separate function /// use separate coroutines and join*/
     //anime
     viewModel.getMediaList(
         sessionToken.toString(),
