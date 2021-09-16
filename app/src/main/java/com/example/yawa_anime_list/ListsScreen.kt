@@ -15,6 +15,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.rounded.Book
+import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -61,7 +64,7 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
     }
 
     val viewModel = ViewModelProvider(store).get(ListsScreenViewModel::class.java)
-    /*TODO: put into for loop in separate function /// use separate coroutines and join*/
+    /*TODO: put into for loop in separate function /// use separate coroutines and join // put in init{}*/
     //anime
     viewModel.getMediaList(
         sessionToken.toString(),
@@ -138,12 +141,12 @@ fun ListsScreen(sharedPreferences: SharedPreferences, store: ViewModelStoreOwner
                     BottomNavBarOption(
                         name = "ANIME",
                         route = "anime",
-                        icon = Icons.Default.Home
+                        icon = Icons.Rounded.PlayArrow
                     ),
                     BottomNavBarOption(
                         name = "MANGA",
                         route = "manga",
-                        icon = Icons.Default.Notifications
+                        icon = Icons.Rounded.Book
                     ),
                     BottomNavBarOption(
                         name = "SETTINGS",

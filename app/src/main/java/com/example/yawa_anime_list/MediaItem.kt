@@ -264,7 +264,7 @@ fun AnimeProgress(
                 modifier = Modifier.fillMaxWidth(),
                 progress = animatedProgress / (item?.media?.episodes?.toFloat()
                     ?: animatedProgress),
-                color = Color.Blue
+                color = Color(0xFF32C91E)
             )
         }
     }
