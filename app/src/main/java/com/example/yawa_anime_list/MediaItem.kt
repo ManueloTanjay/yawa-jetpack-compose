@@ -165,7 +165,7 @@ fun AnimeProgress(
                         fontSize = 10.sp,
                         color = Color.White,
                     )
-                    Card(
+                    Row(
                         modifier = Modifier
                             .background(Constants.CARDCOLOR)
                             .height(28.dp)
@@ -177,26 +177,19 @@ fun AnimeProgress(
                                     "PROGRESS_CLICKED",
                                     item?.media?.title?.romaji.toString() + " should pull up TextField"
                                 )
-                            },
-                        shape = RoundedCornerShape(0.dp),
-                        elevation = 0.dp
+                            }
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .background(Constants.CARDCOLOR)
-                        ) {
-                            Text(
-                                text = progress,
-                                color = Color.White,
-                                fontSize = 20.sp
-                            )
-                            Text(
-                                text = "/" + if (item?.media?.episodes.toString() == "null") " - " else item?.media?.episodes.toString(),
-                                color = Color.White,
-                                fontSize = 20.sp
-                            )
+                        Text(
+                            text = progress,
+                            color = Color.White,
+                            fontSize = 20.sp
+                        )
+                        Text(
+                            text = "/" + if (item?.media?.episodes.toString() == "null") " - " else item?.media?.episodes.toString(),
+                            color = Color.White,
+                            fontSize = 20.sp
+                        )
 
-                        }
                     }
                 }
                 Spacer(modifier = Modifier.width(2.dp))
@@ -574,7 +567,7 @@ fun MangaProgress(
                     color = Color.Blue,
                     strokeWidth = 6.dp,
 
-                )
+                    )
             }
         }
     }
