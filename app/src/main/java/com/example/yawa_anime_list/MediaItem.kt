@@ -426,7 +426,7 @@ fun MangaProgress(
                         fontSize = 10.sp,
                         color = Color.White,
                     )
-                    Card(
+                    Row(
                         modifier = Modifier
                             .background(Constants.CARDCOLOR)
                             .height(28.dp)
@@ -438,31 +438,25 @@ fun MangaProgress(
                                     "PROGRESS_CLICKED",
                                     item?.media?.title?.romaji.toString() + " should pull up TextField"
                                 )
-                            },
-                        shape = RoundedCornerShape(0.dp),
-                        elevation = 0.dp
+                            }
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .background(Constants.CARDCOLOR)
-                        ) {
-                            Text(
-                                text = volProgress,
-                                color = Color.White,
-                                fontSize = 20.sp
-                            )
-                            Text(
-                                text = "/" + if (item?.media?.volumes.toString() == "null") " - " else item?.media?.volumes.toString(),
-                                color = Color.White,
-                                fontSize = 20.sp
-                            )
-                        }
+                        Text(
+                            text = volProgress,
+                            color = Color.White,
+                            fontSize = 20.sp
+                        )
+                        Text(
+                            text = "/" + if (item?.media?.volumes.toString() == "null") " - " else item?.media?.volumes.toString(),
+                            color = Color.White,
+                            fontSize = 20.sp
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.width(2.dp))
-                Card(
+                Row(
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
-                        .background(Color.Transparent)
+                        .background(Constants.CARDCOLOR)
                         .width(28.dp)
                         .height(28.dp)
                         .clickable(
@@ -500,20 +494,13 @@ fun MangaProgress(
                                 "+_CLICKED",
                                 item?.media?.title?.romaji.toString() + " volumes incremented"
                             )
-                        },
-                    shape = RoundedCornerShape(0.dp),
-                    elevation = 0.dp
+                        }
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.background(Constants.CARDCOLOR)
-                    ) {
-                        Icon(
-                            Icons.Rounded.Add,
-                            tint = Color.White,
-                            contentDescription = "Localized description"
-                        )
-                    }
+                    Icon(
+                        Icons.Rounded.Add,
+                        tint = Color.White,
+                        contentDescription = "Localized description"
+                    )
                 }
             }
         }
