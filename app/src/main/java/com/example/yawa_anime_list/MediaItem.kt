@@ -339,7 +339,7 @@ fun MangaProgress(
                         fontSize = 10.sp,
                         color = Color.White,
                     )
-                    Card(
+                    Row(
                         modifier = Modifier
                             .background(Constants.CARDCOLOR)
                             .height(28.dp)
@@ -351,26 +351,19 @@ fun MangaProgress(
                                     "PROGRESS_CLICKED",
                                     item?.media?.title?.romaji.toString() + " should pull up TextField"
                                 )
-                            },
-                        shape = RoundedCornerShape(0.dp),
-                        elevation = 0.dp
+                            }
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .background(Constants.CARDCOLOR)
-                        ) {
-                            Text(
-                                text = progress,
-                                color = Color.White,
-                                fontSize = 20.sp
-                            )
-                            Text(
-                                text = "/" + if (item?.media?.chapters.toString() == "null") " - " else item?.media?.chapters.toString(),
-                                color = Color.White,
-                                fontSize = 20.sp
-                            )
+                        Text(
+                            text = progress,
+                            color = Color.White,
+                            fontSize = 20.sp
+                        )
+                        Text(
+                            text = "/" + if (item?.media?.chapters.toString() == "null") " - " else item?.media?.chapters.toString(),
+                            color = Color.White,
+                            fontSize = 20.sp
+                        )
 
-                        }
                     }
                 }
                 Spacer(modifier = Modifier.width(2.dp))
