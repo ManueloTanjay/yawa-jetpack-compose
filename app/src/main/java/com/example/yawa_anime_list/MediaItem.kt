@@ -193,11 +193,11 @@ fun AnimeProgress(
                     }
                 }
                 Spacer(modifier = Modifier.width(2.dp))
-                Card(
+                Row(
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
-                        .background(Color.Transparent)
-                        .width(28.dp)
-                        .height(28.dp)
+                        .background(Constants.CARDCOLOR)
+                        .padding(2.dp)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple()
@@ -233,22 +233,13 @@ fun AnimeProgress(
                                 "+_CLICKED",
                                 item?.media?.title?.romaji.toString() + " episodes incremented"
                             )
-                        },
-                    shape = RoundedCornerShape(0.dp),
-                    elevation = 0.dp
+                        }
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .background(Constants.CARDCOLOR)
-                            .padding(2.dp)
-                    ) {
-                        Icon(
-                            Icons.Rounded.Add,
-                            tint = Color.White,
-                            contentDescription = "Localized description"
-                        )
-                    }
+                    Icon(
+                        Icons.Rounded.Add,
+                        tint = Color.White,
+                        contentDescription = "Localized description"
+                    )
                 }
             }
         }
