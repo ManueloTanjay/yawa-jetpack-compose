@@ -359,6 +359,8 @@ fun MediaList(
     val media by liveMedia.observeAsState(initial = emptyList())
     val listState = rememberLazyListState()
 
+    /*TODO: make listStates for each of the 10 lists and have them observed here so that scroll position is remembered
+       through recomposition*/
     LazyColumn(
         state = listState,
         modifier = Modifier
