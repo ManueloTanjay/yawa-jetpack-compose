@@ -35,7 +35,7 @@ import type.MediaType
  */
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun MediaItem(
+fun MediaItemCard(
     modifier: Modifier,
     item: GetMediaListQuery.MediaList?,
     mediaType: MediaType,
