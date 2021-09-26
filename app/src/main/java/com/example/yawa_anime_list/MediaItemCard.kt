@@ -312,6 +312,10 @@ fun MangaProgress(
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
     ).value
 
+    val progPercent = animatedVolProgress / (item?.media?.volumes?.toFloat() ?: Constants.MAXINT.toFloat())
+    val volProgPercent = animatedProgress / (item?.media?.chapters?.toFloat() ?: Constants.MAXINT.toFloat())
+    val displayProgress = if (progPercent > volProgPercent) progPercent else volProgPercent
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -507,33 +511,32 @@ fun MangaProgress(
         Box(modifier = Modifier.align(Alignment.BottomCenter)) {
             LinearProgressIndicator(
                 modifier = Modifier.fillMaxWidth(),
-                progress = animatedProgress / (item?.media?.chapters?.toFloat()
-                    ?: animatedProgress),
+                progress = displayProgress,
                 color = Color.Blue
             )
         }
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-//                .background(Color.Red)
-                .size(64.dp)
-                .padding(top = 18.dp, bottom = 18.dp, start = 18.dp, end = 14.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-//                    .background(Color.Green)
-//                    .padding(10.dp)
-            ) {
-                CircularProgressIndicator(
-//                modifier = Modifier.fillMaxWidth().size(15.dp),
-                    progress = animatedVolProgress / (item?.media?.volumes?.toFloat()
-                        ?: animatedVolProgress),
-                    color = Color.Blue,
-                    strokeWidth = 6.dp,
-
-                    )
-            }
-        }
+//        Box(
+//            modifier = Modifier
+//                .align(Alignment.BottomEnd)
+////                .background(Color.Red)
+//                .size(64.dp)
+//                .padding(top = 18.dp, bottom = 18.dp, start = 18.dp, end = 14.dp)
+//        ) {
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxSize()
+////                    .background(Color.Green)
+////                    .padding(10.dp)
+//            ) {
+//                CircularProgressIndicator(
+////                modifier = Modifier.fillMaxWidth().size(15.dp),
+//                    progress = animatedVolProgress / (item?.media?.volumes?.toFloat()
+//                        ?: animatedVolProgress),
+//                    color = Color.Blue,
+//                    strokeWidth = 6.dp,
+//
+//                    )
+//            }
+//        }
     }
 }
