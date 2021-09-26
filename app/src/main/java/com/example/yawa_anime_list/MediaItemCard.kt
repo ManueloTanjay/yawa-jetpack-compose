@@ -312,6 +312,7 @@ fun MangaProgress(
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
     ).value
 
+    //get the higher % between chapters and volumes and use that for progressbar
     val progPercent = animatedVolProgress / (item?.media?.volumes?.toFloat() ?: Constants.MAXINT.toFloat())
     val volProgPercent = animatedProgress / (item?.media?.chapters?.toFloat() ?: Constants.MAXINT.toFloat())
     val displayProgress = if (progPercent > volProgPercent) progPercent else volProgPercent

@@ -7,6 +7,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -357,7 +359,33 @@ fun MediaList(
     mediaType: MediaType
 ) {
     val media by liveMedia.observeAsState(initial = emptyList())
-    val listState = rememberLazyListState()
+//    val listState = rememberLazyListState()
+    val listState = remember {
+        when(mediaType) {
+            Constants.ANIME -> {
+                when(mediaListStatus) {
+                    Constants.CURRENT -> viewModel.currAnimeListState
+                    Constants.COMPLETED -> viewModel.comAnimeListState
+                    Constants.PLANNING -> viewModel.planAnimeListState
+                    Constants.PAUSED -> viewModel.pauseAnimeListState
+                    Constants.DROPPED -> viewModel.dropAnimeListState
+                    else -> LazyListState(0, 0)
+                }
+            }
+            Constants.MANGA -> {
+                when(mediaListStatus) {
+                    Constants.CURRENT -> viewModel.currMangaListState
+                    Constants.COMPLETED -> viewModel.comMangaListState
+                    Constants.PLANNING -> viewModel.planMangaListState
+                    Constants.PAUSED -> viewModel.pauseMangaListState
+                    Constants.DROPPED -> viewModel.dropMangaListState
+                    else -> LazyListState(0, 0)
+                }
+            }
+            else -> LazyListState(0, 0)
+        }
+    }
+
 
     /*TODO: make listStates for each of the 10 lists and have them observed here so that scroll position is remembered
        through recomposition*/

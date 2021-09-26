@@ -2,6 +2,8 @@ package com.example.yawa_anime_list
 
 import GetMediaListQuery
 import android.util.Log
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.apollographql.apollo3.ApolloClient
@@ -12,8 +14,6 @@ import type.MediaListStatus
 import type.MediaType
 
 class ListsScreenViewModel : ViewModel() {
-
-    val liveMedia = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
 
     //lists for the different MediaLists based on MediaListStatus and MediaType
     //anime
@@ -30,7 +30,7 @@ class ListsScreenViewModel : ViewModel() {
     val liveMediaDroppedManga = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
     val liveMediaPausedManga = MutableLiveData<List<GetMediaListQuery.MediaList?>?>()
 
-    //progress lists for anime episodes and manga chapters and volumes
+    //progress lists for anime episodes and manga chapters and manga volumes
     var currAnimeProg = mutableMapOf<Int, Int>()
     var comAnimeProg = mutableMapOf<Int, Int>()
     var planAnimeProg = mutableMapOf<Int, Int>()
@@ -49,6 +49,18 @@ class ListsScreenViewModel : ViewModel() {
     var pauseMangaVolProg = mutableMapOf<Int, Int>()
     var dropMangaVolProg = mutableMapOf<Int, Int>()
 
+    //listStatefor each list
+    var currAnimeListState = LazyListState(0, 0)
+    var comAnimeListState = LazyListState(0, 0)
+    var planAnimeListState = LazyListState(0, 0)
+    var pauseAnimeListState = LazyListState(0, 0)
+    var dropAnimeListState = LazyListState(0, 0)
+
+    var currMangaListState = LazyListState(0, 0)
+    var comMangaListState = LazyListState(0, 0)
+    var planMangaListState = LazyListState(0, 0)
+    var pauseMangaListState = LazyListState(0, 0)
+    var dropMangaListState = LazyListState(0, 0)
 
 
     private var nextPage = 1
@@ -224,7 +236,6 @@ class ListsScreenViewModel : ViewModel() {
             }
         }
 
-        liveMedia.value = media
         //anime
         if (mediaType == Constants.ANIME) {
             when (mediaListStatus) {
