@@ -62,7 +62,6 @@ class ListsScreenViewModel : ViewModel() {
     var pauseMangaListState = LazyListState(0, 0)
     var dropMangaListState = LazyListState(0, 0)
 
-
     private var nextPage = 1
     private var hasNextPage = true
 
