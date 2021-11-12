@@ -62,6 +62,7 @@ fun MediaItemCard(
                 .fillMaxWidth()
 //                .padding(horizontal = 10.dp, vertical = 0.dp)
 //                .background(Color.Green)
+        //
         ) {
             Text(
                 item?.media?.title?.romaji.toString(),
